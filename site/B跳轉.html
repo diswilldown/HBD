@@ -111,7 +111,7 @@ function prepReverse() {
     .then(function (full) {
       var rate = full.sampleRate;
       var end = Math.min(full.length, Math.floor(78 * rate));
-      var start = Math.max(0, end - Math.floor(3.5 * rate));
+      var start = Math.max(0, end - Math.floor(7 * rate));
       var len = end - start;
       var rev = ctx.createBuffer(full.numberOfChannels, len, rate);
       var c;
@@ -214,6 +214,7 @@ function startScare(next) {
   }, 3400);
   function playReverse() {
     if (!scareReady) return;
+    audio.playbackRate = 2;
     audio.currentTime = 0;
     audio.play();
   }
