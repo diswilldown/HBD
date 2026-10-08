@@ -1,0 +1,667 @@
+<!-- H.kill。H 首頁的每個文字改成擊殺，沒有貓 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>H.kill</title>
+<style>
+html, body {
+  margin: 0;
+  background: #c0c0c0;
+}
+body {
+  font-family: "Times New Roman", Times, serif;
+  color: #000000;
+}
+/* 滑鼠換成鬧鐘。熱點在圓面中間 */
+html, body, body * {
+  cursor: url("素材/cursor-clock.png") 49 39, auto !important;
+}
+#page {
+  max-width: 880px;
+  margin: 16px auto;
+  padding: 0 16px;
+}
+#banner {
+  height: 150px;
+  background: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+#banner a {
+  display: block;
+  line-height: 0;
+  border: 0;
+}
+#banner img {
+  height: 120px;
+  width: auto;
+  display: block;
+  border: 0;
+}
+#nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #d4d0c8;
+  border: 1px solid #000000;
+  border-top: none;
+  padding: 8px 12px;
+}
+#nav b {
+  margin-right: 18px;
+}
+#nav a {
+  color: #0000ff;
+  margin-right: 16px;
+}
+#org {
+  position: relative;
+  display: inline-block;
+}
+#org-btn {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+  color: #0000ff;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin-right: 16px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+#org-note {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 22px;
+  z-index: 5;
+  padding: 1px 5px;
+  background: #ffffe1;
+  border: 1px solid #000000;
+  font-size: 12px;
+  line-height: 1.3;
+  color: #000000;
+  white-space: nowrap;
+  pointer-events: none;
+}
+#org:hover #org-note {
+  display: block;
+}
+#search {
+  margin: 0;
+}
+#q {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+}
+#miss {
+  color: #ff0000;
+  margin-left: 8px;
+}
+#ticker {
+  overflow: hidden;
+  white-space: nowrap;
+  height: 18px;
+  line-height: 18px;
+  background: #ffffff;
+  border: 1px solid #000000;
+  border-top: none;
+  font-size: 13px;
+  pointer-events: none;
+}
+#ticker-track {
+  display: flex;
+  width: max-content;
+  /* 跑馬燈預設秒數，實際速度由下面的腳本依文字寬度重算 */
+  animation: ticker 18s linear infinite;
+}
+#ticker-track span {
+  flex: none;
+  white-space: nowrap;
+}
+#ticker:hover #ticker-track {
+  animation-play-state: paused;
+}
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+#main {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  height: 420px;
+  margin-top: 12px;
+}
+#tales {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 0 0 0 16px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+#board-head {
+  margin: 0 0 8px;
+}
+#posts {
+  flex: 1;
+  min-height: 0;
+  overflow-y: scroll;
+}
+.post {
+  width: 100%;
+  border: 1px solid #000000;
+  border-collapse: collapse;
+  margin: 0 0 8px;
+  background: #ffffff;
+}
+.post td {
+  padding: 4px 8px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.post .meta {
+  background: #d4d0c8;
+  font-size: 13px;
+}
+#board-form {
+  margin: 8px 0 0;
+  border-top: 1px solid #000000;
+  padding-top: 8px;
+}
+#board-form p {
+  margin: 6px 0;
+}
+#board-form input[type="text"],
+#board-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 15px;
+}
+#side {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+#mp3-slot {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px;
+}
+#mp3 {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#mp3-play {
+  flex: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  line-height: 0;
+  cursor: pointer;
+}
+#mp3-bar {
+  flex: 1;
+  height: 6px;
+  background: #ffffff;
+  border: 1px solid #000000;
+  cursor: pointer;
+}
+#mp3-fill {
+  height: 100%;
+  width: 0;
+  background: #000000;
+}
+#mp3-time {
+  flex: none;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 12px;
+}
+#note-login {
+  background: #ffffff;
+  border: 1px solid #000000;
+  padding: 12px;
+}
+#note-login p {
+  margin: 8px 0;
+}
+#note-login input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+}
+#note-pw.masked {
+  -webkit-text-security: disc;
+}
+#note-msg {
+  color: #ff0000;
+  min-height: 1.2em;
+}
+#note {
+  position: relative;
+  background: #fff8f6;
+  border: 1px solid #d7a3b4;
+  border-radius: 0 0 16px 0;
+  padding: 22px 28px 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-align: center;
+}
+#note .vine {
+  position: absolute;
+  width: 78px;
+  height: 62px;
+  pointer-events: none;
+}
+#note .tl { left: 0; top: 0; }
+#note .tr { right: 0; top: 0; transform: scaleX(-1); }
+#note .bl { left: 0; bottom: 0; transform: scaleY(-1); }
+#note .br { right: 0; bottom: 0; transform: scale(-1); }
+#note .title {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+#note p {
+  margin: 4px 0;
+  font-size: 15px;
+}
+#note .pink {
+  color: #e07a98;
+}
+
+</style>
+</head>
+<body bgcolor="#c0c0c0" text="#000000" link="#0000ff" vlink="#800080">
+<!-- 首頁整頁 -->
+<div id="page">
+<!-- 上方擊殺擊殺橫幅。圖檔在 素材/LOGO.png -->
+<div id="banner"><a href="H.kill.html" target="_blank"><img src="素材/LOGO.png" alt=""></a></div>
+<!-- 導覽與搜尋 -->
+<div id="nav">
+<div>
+<a href="新聞/新聞.html">擊殺擊殺</a>
+<!-- 擊殺擊殺不跳頁。滑鼠停在上面才出現小提示 -->
+<span id="org"><button type="button" id="org-btn">擊殺擊殺</button><span id="org-note">擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺</span></span>
+</div>
+<form id="search" action="result.html" method="get">
+<input type="text" id="q" name="q" size="16" autocomplete="off" spellcheck="false" lang="zh-Hant">
+<input type="hidden" name="v" value="35">
+<input type="submit" value="擊殺擊殺">
+</form>
+</div>
+<!-- 跑馬燈 -->
+<div id="ticker"><div id="ticker-track"><span>擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺 </span></div></div>
+<div id="main">
+<!-- 左邊整塊是擊殺擊殺擊殺。擊殺擊殺擊殺、擊殺擊殺擊殺是先放上的兩則 -->
+<div id="tales">
+<p id="board-head"><b>擊殺擊殺擊殺</b></p>
+<div id="posts"></div>
+<form id="board-form">
+<p>擊殺擊殺<br><input type="text" id="board-name" maxlength="24" autocomplete="off" spellcheck="false" lang="zh-Hant"></p>
+<p>擊殺擊殺<br><textarea id="board-text" rows="3" spellcheck="false" lang="zh-Hant"></textarea></p>
+<p><input type="submit" value="擊殺擊殺"></p>
+</form>
+</div>
+<div id="side">
+<form id="note-login" onsubmit="return openNotebook();">
+<p><b>擊殺擊殺擊殺擊殺擊殺擊殺</b></p>
+<p>擊殺擊殺<br><input type="text" id="note-user" autocomplete="off" spellcheck="false" lang="zh-Hant"></p>
+<p>擊殺擊殺<br><input type="text" id="note-pw" autocomplete="off" spellcheck="false" lang="zh-Hant"></p>
+<p><input type="submit" value="擊殺擊殺"></p>
+<p id="note-msg"></p>
+</form>
+<!-- 記事本和運勢中間：一顆三角形播放鍵。音檔是 素材/再做一次好夢.mp3 -->
+<div id="mp3-slot">
+<div id="mp3">
+<button type="button" id="mp3-play" aria-label="擊殺擊殺"><svg viewBox="0 0 20 22" width="18" height="20" aria-hidden="true"><polygon id="mp3-icon" points="4,2 16,11 4,20" fill="#000000"/><g id="mp3-pause" style="display:none"><rect x="4" y="2" width="4" height="18" fill="#000000"/><rect x="12" y="2" width="4" height="18" fill="#000000"/></g></svg></button>
+<div id="mp3-bar"><div id="mp3-fill"></div></div>
+<span id="mp3-time">0:00</span>
+<audio id="mp3-audio" preload="auto"></audio>
+</div>
+</div>
+<!-- 右下角小塊：花藤框的擊殺擊殺擊殺擊殺 -->
+<div id="note">
+<svg class="vine tl" viewBox="0 0 80 64" aria-hidden="true"><path d="M8 10 C 24 12, 30 30, 50 28 C 64 26, 72 42, 58 54" fill="none" stroke="#5a8f62" stroke-width="1.6"/><ellipse cx="26" cy="18" rx="8" ry="3.6" fill="#7daf78" transform="rotate(-28 26 18)"/><ellipse cx="44" cy="32" rx="8" ry="3.6" fill="#6aa36e" transform="rotate(24 44 32)"/><circle cx="12" cy="12" r="5" fill="#f4b6c8"/><circle cx="12" cy="12" r="2" fill="#e07a98"/></svg>
+<svg class="vine tr" viewBox="0 0 80 64" aria-hidden="true"><path d="M8 10 C 24 12, 30 30, 50 28 C 64 26, 72 42, 58 54" fill="none" stroke="#5a8f62" stroke-width="1.6"/><ellipse cx="26" cy="18" rx="8" ry="3.6" fill="#7daf78" transform="rotate(-28 26 18)"/><ellipse cx="44" cy="32" rx="8" ry="3.6" fill="#6aa36e" transform="rotate(24 44 32)"/><circle cx="12" cy="12" r="5" fill="#f4b6c8"/><circle cx="12" cy="12" r="2" fill="#e07a98"/></svg>
+<svg class="vine bl" viewBox="0 0 80 64" aria-hidden="true"><path d="M8 10 C 24 12, 30 30, 50 28 C 64 26, 72 42, 58 54" fill="none" stroke="#5a8f62" stroke-width="1.6"/><ellipse cx="26" cy="18" rx="8" ry="3.6" fill="#7daf78" transform="rotate(-28 26 18)"/><ellipse cx="44" cy="32" rx="8" ry="3.6" fill="#6aa36e" transform="rotate(24 44 32)"/><circle cx="12" cy="12" r="5" fill="#f4b6c8"/><circle cx="12" cy="12" r="2" fill="#e07a98"/></svg>
+<svg class="vine br" viewBox="0 0 80 64" aria-hidden="true"><path d="M8 10 C 24 12, 30 30, 50 28 C 64 26, 72 42, 58 54" fill="none" stroke="#5a8f62" stroke-width="1.6"/><ellipse cx="26" cy="18" rx="8" ry="3.6" fill="#7daf78" transform="rotate(-28 26 18)"/><ellipse cx="44" cy="32" rx="8" ry="3.6" fill="#6aa36e" transform="rotate(24 44 32)"/><circle cx="12" cy="12" r="5" fill="#f4b6c8"/><circle cx="12" cy="12" r="2" fill="#e07a98"/></svg>
+<p class="title"><b>擊殺擊殺擊殺擊殺</b></p>
+<p>擊殺擊殺擊殺　<span class="pink">擊殺擊殺</span></p>
+<p>擊殺擊殺擊殺　擊殺擊殺</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+function fillTicker() {
+  var ticker = document.getElementById("ticker");
+  var track = document.getElementById("ticker-track");
+  var unit = "擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺擊殺 ";
+  var text = unit;
+  var span = document.createElement("span");
+  span.textContent = text;
+  track.textContent = "";
+  track.appendChild(span);
+  while (span.offsetWidth < ticker.clientWidth) {
+    text += unit;
+    span.textContent = text;
+  }
+  text += unit;
+  span.textContent = text;
+  track.appendChild(span.cloneNode(true));
+  /* 跑馬燈速度：除數愈小愈慢。60 是每秒約 60 像素 */
+  track.style.animationDuration = (span.offsetWidth / 60) + "s";
+}
+fillTicker();
+window.addEventListener("resize", fillTicker);
+
+var notePw = document.getElementById("note-pw");
+var noteMaskTimer = null;
+var noteComposing = false;
+
+function showNotePw() {
+  notePw.className = "";
+}
+
+function queueNoteMask() {
+  clearTimeout(noteMaskTimer);
+  noteMaskTimer = setTimeout(function () {
+    if (!noteComposing) notePw.className = "masked";
+  }, 1000);
+}
+
+notePw.addEventListener("compositionstart", function () {
+  noteComposing = true;
+  clearTimeout(noteMaskTimer);
+  showNotePw();
+});
+
+notePw.addEventListener("compositionend", function () {
+  noteComposing = false;
+  queueNoteMask();
+});
+
+notePw.addEventListener("input", function () {
+  if (noteComposing) return;
+  showNotePw();
+  queueNoteMask();
+});
+
+
+document.getElementById("search").addEventListener("submit", function (e) {
+  var q;
+  e.preventDefault();
+  q = document.getElementById("q").value.replace(/\s/g, "");
+  if (q === "擊殺") {
+    location.assign("endingHD.html");
+    return;
+  }
+  location.assign("result.html?q=" + encodeURIComponent(document.getElementById("q").value) + "&v=36");
+});
+
+/* 點到擊殺也進結局 */
+document.addEventListener("click", function (e) {
+  var el = e.target;
+  var text;
+  if (!el || el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "BUTTON") return;
+  text = el.textContent || "";
+  if (text.indexOf("擊殺") === -1) return;
+  if (/[A-Za-z0-9\u4e00-\u9fff]/.test(text.replace(/擊殺/g, ""))) return;
+  e.preventDefault();
+  location.assign("endingHD.html");
+});
+
+/* 擊殺擊殺擊殺。先有擊殺擊殺擊殺、擊殺擊殺擊殺，玩家送出的存在這台瀏覽器 */
+var boardSeed = [
+  { name: "", text: "擊殺擊殺擊殺", when: "10/6 21:18" },
+  { name: "", text: "擊殺擊殺擊殺", when: "10/6 21:19" }
+];
+
+function loadBoardPosts() {
+  var saved = [];
+  try {
+    saved = JSON.parse(localStorage.getItem("boardPosts") || "[]");
+  } catch (err) {
+    saved = [];
+  }
+  if (!saved || !saved.length) return boardSeed.slice();
+  return boardSeed.concat(saved);
+}
+
+function boardWhen(date) {
+  var h = date.getHours();
+  var m = date.getMinutes();
+  if (m < 10) m = "0" + m;
+  return (date.getMonth() + 1) + "/" + date.getDate() + " " + h + ":" + m;
+}
+
+function asKill(text) {
+  return String(text).replace(/[A-Za-z0-9\u4e00-\u9fff]/g, "擊殺");
+}
+
+function drawBoard() {
+  var posts = document.getElementById("posts");
+  var list = loadBoardPosts();
+  var n;
+  posts.textContent = "";
+  for (n = 0; n < list.length; n++) {
+    var table = document.createElement("table");
+    var metaRow = document.createElement("tr");
+    var meta = document.createElement("td");
+    var bodyRow = document.createElement("tr");
+    var body = document.createElement("td");
+    var who = list[n].name ? list[n].name : "";
+    table.className = "post";
+    meta.className = "meta";
+    meta.textContent = "擊殺擊殺." + asKill(n + 1) + (who ? "　" + asKill(who) : "") + "　擊殺擊殺擊殺擊殺 " + asKill(list[n].when);
+    body.textContent = list[n].text;
+    metaRow.appendChild(meta);
+    bodyRow.appendChild(body);
+    table.appendChild(metaRow);
+    table.appendChild(bodyRow);
+    posts.appendChild(table);
+  }
+}
+
+drawBoard();
+
+var mp3 = document.getElementById("mp3-audio");
+var mp3Play = document.getElementById("mp3-play");
+var mp3Icon = document.getElementById("mp3-icon");
+var mp3Pause = document.getElementById("mp3-pause");
+var mp3Time = document.getElementById("mp3-time");
+var mp3Fill = document.getElementById("mp3-fill");
+
+function mp3Clock(sec) {
+  sec = Math.floor(sec || 0);
+  var m = Math.floor(sec / 60);
+  var s = sec % 60;
+  if (s < 10) s = "0" + s;
+  return m + ":" + s;
+}
+
+function mp3Mark(playing) {
+  mp3Icon.style.display = playing ? "none" : "";
+  mp3Pause.style.display = playing ? "" : "none";
+}
+
+mp3Play.onclick = function () {
+  if (mp3.paused) {
+    mp3.play();
+    mp3Mark(true);
+  } else {
+    mp3.pause();
+    mp3Mark(false);
+  }
+};
+
+mp3.ontimeupdate = function () {
+  var now = mp3Clock(mp3.currentTime);
+  mp3Time.innerHTML = mp3.duration ? now + " / " + mp3Clock(mp3.duration) : now;
+  if (mp3.duration) mp3Fill.style.width = (mp3.currentTime / mp3.duration * 100) + "%";
+};
+
+mp3.onloadedmetadata = function () {
+  mp3Time.innerHTML = mp3Clock(mp3.currentTime) + " / " + mp3Clock(mp3.duration);
+};
+
+mp3.onended = function () {
+  mp3Mark(false);
+};
+
+document.getElementById("mp3-bar").onclick = function (e) {
+  if (!mp3.duration) return;
+  var box = this.getBoundingClientRect();
+  mp3.currentTime = ((e.clientX - box.left) / box.width) * mp3.duration;
+};
+
+/* 整首倒著播。頁面打開就放，不先播正向 */
+function bufferToWav(buffer) {
+  var channels = buffer.numberOfChannels;
+  var rate = buffer.sampleRate;
+  var samples = buffer.length;
+  var bytes = samples * channels * 2;
+  var raw = new ArrayBuffer(44 + bytes);
+  var view = new DataView(raw);
+  function write(offset, text) {
+    var n;
+    for (n = 0; n < text.length; n++) view.setUint8(offset + n, text.charCodeAt(n));
+  }
+  write(0, "RIFF");
+  view.setUint32(4, 36 + bytes, true);
+  write(8, "WAVE");
+  write(12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, channels, true);
+  view.setUint32(24, rate, true);
+  view.setUint32(28, rate * channels * 2, true);
+  view.setUint16(32, channels * 2, true);
+  view.setUint16(34, 16, true);
+  write(36, "data");
+  view.setUint32(40, bytes, true);
+  var data = [];
+  var c;
+  var i;
+  var offset = 44;
+  var sample;
+  for (c = 0; c < channels; c++) data.push(buffer.getChannelData(c));
+  for (i = 0; i < samples; i++) {
+    for (c = 0; c < channels; c++) {
+      sample = data[c][i];
+      if (sample > 1) sample = 1;
+      if (sample < -1) sample = -1;
+      view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+      offset += 2;
+    }
+  }
+  return new Blob([raw], { type: "audio/wav" });
+}
+
+function playReversed() {
+  var started = mp3.play();
+  if (started && started.then) {
+    started.then(function () {
+      mp3Mark(true);
+    }).catch(function () {
+      mp3Mark(false);
+    });
+  } else {
+    mp3Mark(true);
+  }
+}
+
+function prepFullReverse() {
+  var AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  var ctx = new AC();
+  fetch("素材/再做一次好夢.mp3")
+    .then(function (r) { return r.arrayBuffer(); })
+    .then(function (buf) { return ctx.decodeAudioData(buf); })
+    .then(function (full) {
+      var len = full.length;
+      var rev = ctx.createBuffer(full.numberOfChannels, len, full.sampleRate);
+      var c;
+      var i;
+      for (c = 0; c < full.numberOfChannels; c++) {
+        var src = full.getChannelData(c);
+        var dst = rev.getChannelData(c);
+        for (i = 0; i < len; i++) dst[i] = src[len - 1 - i];
+      }
+      mp3.src = URL.createObjectURL(bufferToWav(rev));
+      mp3.addEventListener("canplay", function go() {
+        mp3.removeEventListener("canplay", go);
+        playReversed();
+      });
+      mp3.load();
+      ctx.close();
+    });
+}
+
+prepFullReverse();
+
+document.getElementById("board-form").addEventListener("submit", function (e) {
+  var text = document.getElementById("board-text").value.replace(/^\s+|\s+$/g, "");
+  var name = document.getElementById("board-name").value.replace(/^\s+|\s+$/g, "");
+  var saved;
+  e.preventDefault();
+  if (!text) return;
+  try {
+    saved = JSON.parse(localStorage.getItem("boardPosts") || "[]");
+  } catch (err) {
+    saved = [];
+  }
+  if (!saved) saved = [];
+  saved.push({
+    name: name,
+    text: text,
+    when: boardWhen(new Date())
+  });
+  localStorage.setItem("boardPosts", JSON.stringify(saved));
+  document.getElementById("board-text").value = "";
+  drawBoard();
+  document.getElementById("posts").scrollTop = document.getElementById("posts").scrollHeight;
+});
+
+var pageLinks = document.querySelectorAll("#nav a");
+var i;
+for (i = 0; i < pageLinks.length; i++) {
+  pageLinks[i].addEventListener("click", function (e) {
+    e.preventDefault();
+    location.assign(this.href);
+  });
+}
+
+function openNotebook() {
+  var user = document.getElementById("note-user").value;
+  var pw = notePw.value;
+  if (!user || !pw || localStorage.getItem("dGone") !== "1") {
+    document.getElementById("note-msg").innerHTML = "擊殺擊殺擊殺擊殺擊殺擊殺擊殺";
+    return false;
+  }
+  location.href = "H記事本.html";
+  return false;
+}
+</script>
+<script src="kill-marks.js"></script>
+</body>
+</html>

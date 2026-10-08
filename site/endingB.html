@@ -1,0 +1,223 @@
+<!-- endingB。真結局。B 在自己的大腦上按下擊殺。動畫和 endingHD 一樣：雜訊收成一點，然後全白。先跳出「噗滋」，再打出那句話，最後自己跳到計算器 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>endingB</title>
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+  background: #ffffff;
+  overflow: hidden;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: "Microsoft JhengHei", "PingFang TC", "Heiti TC", "Noto Sans TC", sans-serif;
+  transition: opacity 1.6s ease;
+}
+body.leave {
+  opacity: 0;
+}
+
+/* 雜訊畫面。蓋在白頁上，閃一下就收掉 */
+#tv {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: #000000;
+}
+#noise {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.10) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 5px);
+  animation: jitter 0.09s steps(2) infinite;
+}
+@keyframes jitter {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(-3px, 2px); }
+  100% { transform: translate(2px, -2px); }
+}
+#tv .mark {
+  position: absolute;
+  color: #ff0000;
+  font-family: Consolas, "Courier New", monospace;
+  font-weight: bold;
+  animation: flick 0.12s steps(2) infinite;
+}
+@keyframes flick {
+  50% { opacity: 0.25; }
+}
+/* 收成一條白線，再縮成一個點 */
+#beam {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  transform: translateY(-50%) scaleY(0);
+  opacity: 0;
+}
+#tv.off #noise,
+#tv.off .mark {
+  display: none;
+}
+#tv.off #beam {
+  opacity: 1;
+  animation: collapse 0.9s ease-in forwards;
+}
+@keyframes collapse {
+  0%   { transform: translateY(-50%) scale(1, 1); }
+  35%  { transform: translateY(-50%) scale(1, 0.004); }
+  75%  { transform: translateY(-50%) scale(0.002, 0.004); }
+  100% { transform: translateY(-50%) scale(0, 0); }
+}
+#tv.gone {
+  transition: opacity 1.2s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 噗滋。一下彈出來，再縮回去停著 */
+#pop {
+  margin: 0 0 28px;
+  font-size: 64px;
+  font-weight: bold;
+  letter-spacing: 0.12em;
+  color: #1a1a1a;
+  opacity: 0;
+}
+#pop.show {
+  animation: puff 0.7s cubic-bezier(.2, 1.6, .4, 1) forwards;
+}
+@keyframes puff {
+  0%   { opacity: 0; transform: scale(0.2); }
+  60%  { opacity: 1; transform: scale(1.25); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* 那句話 */
+#line {
+  margin: 0;
+  min-height: 2em;
+  text-align: center;
+  font-size: 34px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  line-height: 2;
+  color: #1a1a1a;
+  white-space: pre-wrap;
+}
+#line .ch {
+  opacity: 0;
+  animation: ink 0.6s ease forwards;
+}
+#line .red {
+  color: #ff0000;
+  font-family: Consolas, "Courier New", monospace;
+  font-weight: bold;
+}
+@keyframes ink {
+  from { opacity: 0; filter: blur(3px); }
+  to   { opacity: 1; filter: blur(0); }
+}
+</style>
+</head>
+<body>
+<div id="tv"><div id="noise"></div><div id="beam"></div></div>
+<p id="pop">噗滋</p>
+<p id="line"></p>
+
+<script>
+var tv = document.getElementById("tv");
+var pop = document.getElementById("pop");
+var line = document.getElementById("line");
+
+/* 那句話。(*) 會變紅 */
+var words = "你覺得(*)無比舒服";
+
+/* 節奏。單位是毫秒 */
+var NOISE_TIME = 1100;
+var SILENCE_TIME = 1800;
+var POP_GAP = 1400;
+var CHAR_TIME = 190;
+var STAY_TIME = 4500;
+var NEXT_PAGE = "計算器.html";
+
+function sprinkleMarks() {
+  var i;
+  var m;
+  for (i = 0; i < 14; i += 1) {
+    m = document.createElement("span");
+    m.className = "mark";
+    m.textContent = "(*)";
+    m.style.left = Math.random() * 92 + "%";
+    m.style.top = Math.random() * 92 + "%";
+    m.style.fontSize = 14 + Math.random() * 90 + "px";
+    m.style.transform = "rotate(" + (Math.random() * 60 - 30) + "deg)";
+    m.style.animationDelay = Math.random() * 0.12 + "s";
+    tv.appendChild(m);
+  }
+}
+
+function addChar(text, red) {
+  var span = document.createElement("span");
+  span.className = red ? "ch red" : "ch";
+  span.textContent = text;
+  line.appendChild(span);
+}
+
+function typeWords(done) {
+  var at = 0;
+  function next() {
+    if (at >= words.length) {
+      done();
+      return;
+    }
+    if (words.substr(at, 3) === "(*)") {
+      addChar("(*)", true);
+      at += 3;
+    } else {
+      addChar(words.charAt(at), false);
+      at += 1;
+    }
+    setTimeout(next, CHAR_TIME);
+  }
+  next();
+}
+
+function leave() {
+  document.body.className = "leave";
+  setTimeout(function () {
+    location.href = NEXT_PAGE;
+  }, 1700);
+}
+
+sprinkleMarks();
+
+setTimeout(function () {
+  tv.className = "off";
+}, NOISE_TIME);
+
+setTimeout(function () {
+  tv.className = "off gone";
+}, NOISE_TIME + 900);
+
+setTimeout(function () {
+  pop.className = "show";
+}, NOISE_TIME + 900 + SILENCE_TIME);
+
+setTimeout(function () {
+  typeWords(function () {
+    setTimeout(leave, STAY_TIME);
+  });
+}, NOISE_TIME + 900 + SILENCE_TIME + POP_GAP);
+</script>
+</body>
+</html>

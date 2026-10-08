@@ -1,0 +1,66 @@
+/* H 這邊的組織文件。白紙、灰格、紅字是批示 */
+.doc {
+  font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  text-align: left;
+}
+.doc .stamp {
+  margin: 0 0 14px;
+  padding: 6px 10px;
+  border: 2px solid #9c1c1c;
+  color: #9c1c1c;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+.doc .name {
+  margin: 0 0 8px;
+  font-size: 24px;
+  letter-spacing: 0.12em;
+}
+.doc .part {
+  margin: 22px 0 6px;
+  font-weight: bold;
+  color: #333333;
+}
+.doc p {
+  margin: 0 0 6px;
+}
+.doc table.file {
+  width: 100%;
+  border-collapse: collapse;
+}
+table.sheet .doc table.file th,
+table.sheet .doc table.file td {
+  border: 1px solid #cccccc;
+  padding: 7px 12px;
+  text-align: left;
+  vertical-align: top;
+  font-weight: normal;
+  font-size: 15px;
+}
+table.sheet .doc table.file th {
+  width: 108px;
+  background: #f4f4f4;
+  color: #333333;
+}
+.doc .hurt {
+  color: #9c1c1c;
+}
+.doc .cut {
+  background: #000000;
+  color: #000000;
+}
+.doc .quote {
+  margin: 6px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid #9c1c1c;
+  background: #f6f6f6;
+  font-family: "MingLiU", "PMingLiU", serif;
+  line-height: 1.8;
+}
+.doc .small {
+  font-size: 12px;
+  color: #777777;
+}

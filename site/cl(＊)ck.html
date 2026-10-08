@@ -1,0 +1,219 @@
+<!-- cl(*)ck -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<title>cl(*)ck</title>
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+}
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #050303;
+}
+/* 四周壓黑，中間淡淡的紅，慢慢亮一下 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, rgba(110, 8, 8, 0.34) 0%, rgba(0, 0, 0, 0) 36%, rgba(0, 0, 0, 0.82) 100%);
+  animation: breath 6.5s ease-in-out infinite;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.22) 0px,
+    rgba(0, 0, 0, 0.22) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+}
+@keyframes breath {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+#sheet {
+  position: relative;
+  z-index: 1;
+}
+#picture {
+  position: relative;
+  line-height: 0;
+  display: inline-block;
+}
+/* 黑底已從圖拿掉，光跟著鬧鐘的圓邊，不畫方框 */
+#picture img {
+  height: 340px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 0 28px rgba(140, 0, 0, 0.5));
+}
+/* 依畫的紅框：圓中間一條字帶，往右下斜 */
+/* 字帶貼在圓上。右邊比較遠，字往後變小 */
+#face-rig {
+  position: absolute;
+  left: 60.4%; /* 左右。變大往右 */
+  top: 40.8%; /* 上下。變大往下 */
+  width: 78%; /* 字帶寬度 */
+  height: 64px; /* 字帶高度 */
+  transform: translate(-50%, -50%) rotate(8deg); /* 整行傾斜。正數往右下 */
+  perspective: 150px; /* 深度。數字越小，遠的那邊縮越兇 */
+  perspective-origin: 88% 50%; /* 消失點。第一個數字越大，右邊越遠 */
+}
+#pop {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  background: rgba(0, 0, 0, 0.35);
+  align-items: center;
+  justify-content: center;
+}
+#pop.show {
+  display: flex;
+}
+#box {
+  width: 360px;
+  background: #c0c0c0;
+  border: 2px solid #ffffff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  padding: 18px;
+}
+#track {
+  height: 22px;
+  background: #ffffff;
+  border: 2px solid #404040;
+  border-right-color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+#fill {
+  height: 100%;
+  width: 0;
+  background: #000080;
+}
+#flash {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  background: #000000;
+  align-items: center;
+  justify-content: center;
+}
+#flash.show {
+  display: flex;
+}
+#mark {
+  margin: 0;
+  color: #ff0000;
+  font-size: 72px;
+  font-family: Consolas, "Courier New", monospace;
+  animation: flash 0.5s linear 1;
+}
+@keyframes flash {
+  0% { opacity: 1; }
+  49% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 0; }
+}
+#face {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 16px 6px 0;
+  transform: rotateY(38deg); /* 往後倒。正數右邊變小，改負數會左右對調 */
+  transform-origin: 28% 50%; /* 轉軸。數字小軸靠左，大軸靠右 */
+  background: transparent;
+  border: none;
+  overflow: hidden;
+  color: #efeae4;
+  caret-color: #efeae4;
+  font-family: Bahnschrift, Consolas, sans-serif; /* 英文字。方正、機械感 */
+  font-size: 22px; /* 字的大小 */
+  line-height: 1.25;
+  text-align: center;
+  resize: none;
+  outline: none;
+}
+</style>
+</head>
+<body bgcolor="#050303">
+<div id="sheet">
+<!-- 圖在 素材/clock.png -->
+<div id="picture">
+<img src="素材/clock.png?v=nobg" alt="">
+<div id="face-rig"><textarea id="face"></textarea></div>
+</div>
+</div>
+<!-- 跟入口一樣：進度條，再閃 (*) ，然後開新分頁 -->
+<div id="pop">
+<div id="box">
+<div id="track"><div id="fill"></div></div>
+</div>
+</div>
+<div id="flash"><p id="mark">(*)</p></div>
+<script>
+var face = document.getElementById("face");
+var connecting = false;
+var jumps = {
+  "H.search": "H.kill.html",
+  "D.search": "D.kill.html",
+  "B.search": "B.kill.html"
+};
+
+function startJump(page) {
+  if (connecting) return;
+  connecting = true;
+  var pop = document.getElementById("pop");
+  var fill = document.getElementById("fill");
+  pop.className = "show";
+  fill.style.width = "0%";
+  var n = 0;
+  var timer = setInterval(function () {
+    n += 2;
+    if (n > 100) n = 100;
+    fill.style.width = n + "%";
+    if (n >= 100) {
+      clearInterval(timer);
+      pop.className = "";
+      document.getElementById("flash").className = "show";
+      setTimeout(function () {
+        window.open(page, "_blank");
+        document.getElementById("flash").className = "";
+        fill.style.width = "0%";
+        connecting = false;
+      }, 500);
+    }
+  }, 40);
+}
+
+face.addEventListener("keydown", function (e) {
+  var q;
+  if (e.isComposing || e.key !== "Enter" || e.shiftKey) return;
+  e.preventDefault();
+  q = face.value.replace(/\s/g, "");
+  if (!jumps[q]) return;
+  startJump(jumps[q]);
+});
+</script>
+</body>
+</html>

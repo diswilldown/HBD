@@ -1,0 +1,230 @@
+<!-- 計算器。endingB 之後自己跳過來。十六進位三格換成十進位四格。不提示要打什麼，也不說答案拿去做什麼 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>計算器</title>
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+}
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #008080;
+  font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+}
+#win {
+  background: #c0c0c0;
+  border: 2px solid #ffffff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  box-shadow: 1px 1px 0 #000000;
+  padding: 3px;
+  user-select: none;
+}
+#bar {
+  background: linear-gradient(90deg, #000080, #1084d0);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 3px 6px;
+  letter-spacing: 0.1em;
+}
+#body {
+  padding: 18px 20px 20px;
+}
+/* 算式那一列 */
+#sum {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 18px;
+  font-family: "Courier New", Consolas, monospace;
+  font-size: 18px;
+}
+.cell {
+  width: 44px;
+  height: 52px;
+  box-sizing: border-box;
+  border: 2px solid #404040;
+  border-right-color: #ffffff;
+  border-bottom-color: #ffffff;
+  background: #ffffff;
+  font-family: "Courier New", Consolas, monospace;
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 48px;
+  color: #000000;
+  caret-color: transparent;
+  outline: none;
+  padding: 0;
+}
+.cell.on {
+  background: #ffffcc;
+}
+.out {
+  background: #e8e8e8;
+  color: #000080;
+}
+.base {
+  font-size: 15px;
+  margin: 0 4px 0 1px;
+}
+.eq {
+  font-size: 28px;
+  margin: 0 8px;
+}
+/* 按鍵 */
+#keys {
+  display: grid;
+  grid-template-columns: repeat(6, 52px);
+  gap: 6px;
+  justify-content: center;
+}
+#keys button {
+  height: 40px;
+  background: #c0c0c0;
+  border: 2px solid #ffffff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  font-family: "Courier New", Consolas, monospace;
+  font-size: 20px;
+  font-weight: bold;
+  color: #000080;
+  cursor: pointer;
+  padding: 0;
+}
+#keys button:active {
+  border-color: #404040;
+  border-right-color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+#keys button.fn {
+  color: #800000;
+  font-size: 16px;
+}
+</style>
+</head>
+<body>
+<div id="win">
+<div id="bar">計算器</div>
+<div id="body">
+<div id="sum">
+<input class="cell in" maxlength="1" autocomplete="off" spellcheck="false">
+<input class="cell in" maxlength="1" autocomplete="off" spellcheck="false">
+<input class="cell in" maxlength="1" autocomplete="off" spellcheck="false">
+<span class="base">(16)</span>
+<span class="eq">=</span>
+<div class="cell out"></div>
+<div class="cell out"></div>
+<div class="cell out"></div>
+<div class="cell out"></div>
+<span class="base">(10)</span>
+</div>
+<div id="keys">
+<button type="button">0</button><button type="button">1</button><button type="button">2</button><button type="button">3</button><button type="button">4</button><button type="button">5</button>
+<button type="button">6</button><button type="button">7</button><button type="button">8</button><button type="button">9</button><button type="button">A</button><button type="button">B</button>
+<button type="button">C</button><button type="button">D</button><button type="button">E</button><button type="button">F</button><button type="button" class="fn" data-k="back">←</button><button type="button" class="fn" data-k="clear">清除</button>
+</div>
+</div>
+</div>
+<script>
+var ins = document.querySelectorAll(".in");
+var outs = document.querySelectorAll(".out");
+var at = 0;
+
+/* 十六進位只收 0–9 和 A–F */
+function clean(ch) {
+  ch = String(ch || "").toUpperCase();
+  return /^[0-9A-F]$/.test(ch) ? ch : "";
+}
+
+function mark() {
+  var i;
+  for (i = 0; i < ins.length; i++) ins[i].className = i === at ? "cell in on" : "cell in";
+}
+
+/* 三格都填了才算。十進位補成四位 */
+function calc() {
+  var hex = "";
+  var i, dec;
+  for (i = 0; i < ins.length; i++) hex += ins[i].value;
+  if (hex.length < ins.length) {
+    for (i = 0; i < outs.length; i++) outs[i].textContent = "";
+    return;
+  }
+  dec = String(parseInt(hex, 16));
+  while (dec.length < outs.length) dec = "0" + dec;
+  for (i = 0; i < outs.length; i++) outs[i].textContent = dec.charAt(i);
+}
+
+function put(ch) {
+  ch = clean(ch);
+  if (!ch) return;
+  ins[at].value = ch;
+  if (at < ins.length - 1) at += 1;
+  mark();
+  calc();
+}
+
+function back() {
+  if (!ins[at].value && at > 0) at -= 1;
+  ins[at].value = "";
+  mark();
+  calc();
+}
+
+function clearAll() {
+  var i;
+  for (i = 0; i < ins.length; i++) ins[i].value = "";
+  at = 0;
+  mark();
+  calc();
+}
+
+var keys = document.querySelectorAll("#keys button");
+for (var k = 0; k < keys.length; k++) {
+  keys[k].onclick = function () {
+    var fn = this.getAttribute("data-k");
+    if (fn === "back") back();
+    else if (fn === "clear") clearAll();
+    else put(this.textContent);
+  };
+}
+
+for (var n = 0; n < ins.length; n++) {
+  (function (i) {
+    ins[i].addEventListener("focus", function () {
+      at = i;
+      mark();
+    });
+    ins[i].addEventListener("input", function () {
+      var ch = clean(ins[i].value.slice(-1));
+      ins[i].value = "";
+      at = i;
+      if (ch) put(ch);
+      else calc();
+    });
+  })(n);
+}
+
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Backspace") {
+    e.preventDefault();
+    back();
+  } else if (e.key === "Escape") {
+    clearAll();
+  } else if (document.activeElement.className.indexOf("in") === -1 && clean(e.key)) {
+    put(e.key);
+  }
+});
+
+mark();
+ins[0].focus();
+</script>
+</body>
+</html>

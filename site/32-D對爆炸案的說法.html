@@ -1,0 +1,170 @@
+<!-- 32 D 的固定選項對話。問題依序出現，D 一個個回答 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>還有疑問？</title>
+<link rel="stylesheet" href="終端.css">
+<style>
+#chat {
+  max-width: 46em;
+}
+.question {
+  margin: 22px 0 8px;
+  color: #ffffff;
+}
+.answer {
+  margin: 0 0 8px;
+}
+#choices {
+  margin-top: 26px;
+}
+#choices button {
+  border: 1px solid #33ff33;
+  padding: 8px 12px;
+  background: #000000;
+  color: #33ff33;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+#choices button:hover,
+#choices button:focus {
+  background: #33ff33;
+  color: #000000;
+  outline: none;
+  text-shadow: none;
+}
+.cursor {
+  display: inline-block;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+</style>
+</head>
+<body>
+<p>&gt; 還有疑問？</p>
+<p class="dim">&gt; D 已連線</p>
+<div id="chat" aria-live="polite"></div>
+<div id="choices"></div>
+<p class="back"><a href="D.search.html">返回</a></p>
+
+<script>
+var turns = [
+  {
+    q: "9/13 到底怎麼了？",
+    a: [
+      "09/13 23:00，二樓包廂。",
+      "包廂是 P 訂的，他一個人進去。爆炸物在 22:30 前就已經放到桌下，啟動的人根本不必在現場。",
+      "H 的名單說 B 死了。我的說她被送醫。同一個編號，至少有一份在說謊。"
+    ]
+  },
+  {
+    q: "H 說是你做的。",
+    a: [
+      "他當然會這麼說。",
+      "那晚頻道斷了四十秒。斷點在組織自己的伺服器，不是外面。",
+      "那不是有人闖進去，是裡面的人把門關上。"
+    ]
+  },
+  {
+    q: "所以 H……？",
+    a: [
+      "終於問對了。",
+      "餐廳的訂位紀錄在前一天被組織帳號查過三次，權限等級和 H 相同。",
+      "H 當晚的行程被刪了。刪除者也有他的權限。你還需要我替你把名字念出來？"
+    ]
+  },
+  {
+    q: "他為什麼要這樣？",
+    a: [
+      "因為那個房間裡坐的是會擋他的人。",
+      "P 有表決權。他在競爭者名單上，處理日期就是 09/13。",
+      "B 也在那張名單上。他寫了不動她。那她為什麼會在二樓？",
+      "H 不是在辦案。他是在清場。",
+      "他跟你說我很危險。他沒說錯。但你現在坐在誰給你的網站裡？"
+    ]
+  }
+];
+
+var index = 0;
+var chat = document.getElementById("chat");
+var choices = document.getElementById("choices");
+
+function showChoice() {
+  choices.innerHTML = "";
+  if (index >= turns.length) {
+    choices.innerHTML = '<p class="dim">&gt; D 等待回應<span class="cursor">_</span></p>';
+    return;
+  }
+  var button = document.createElement("button");
+  button.type = "button";
+  button.textContent = "> " + turns[index].q;
+  button.onclick = answer;
+  choices.appendChild(button);
+}
+
+function answer() {
+  var turn = turns[index];
+  choices.innerHTML = "";
+
+  var question = document.createElement("p");
+  question.className = "question";
+  question.textContent = "> " + turn.q;
+  chat.appendChild(question);
+
+  setTimeout(function () {
+    typeAnswer(turn.a, 0);
+  }, 350);
+}
+
+function typeAnswer(lines, lineIndex) {
+  if (lineIndex >= lines.length) {
+    index++;
+    setTimeout(showChoice, 300);
+    return;
+  }
+
+  var line = document.createElement("p");
+  line.className = "answer";
+  line.appendChild(document.createTextNode("> "));
+  var typed = document.createTextNode("");
+  var caret = document.createElement("span");
+  caret.className = "cursor";
+  caret.textContent = "_";
+  line.appendChild(typed);
+  line.appendChild(caret);
+  chat.appendChild(line);
+
+  var text = lines[lineIndex];
+  var charIndex = 0;
+
+  function typeChar() {
+    if (charIndex >= text.length) {
+      caret.remove();
+      setTimeout(function () {
+        typeAnswer(lines, lineIndex + 1);
+      }, 220);
+      return;
+    }
+
+    var ch = text.charAt(charIndex);
+    typed.nodeValue += ch;
+    charIndex++;
+    window.scrollTo(0, document.body.scrollHeight);
+
+    var delay = 32;
+    if (ch === "，" || ch === "、") delay = 100;
+    if (ch === "。" || ch === "？" || ch === "！") delay = 240;
+    setTimeout(typeChar, delay);
+  }
+
+  typeChar();
+}
+
+showChoice();
+</script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>搜尋結果</title>
+<style>
+body.term {
+  background: #000000 !important;
+  color: #33ff33;
+}
+body.term,
+body.term font,
+body.term h2,
+body.term p,
+body.term a {
+  font-family: Consolas, "Courier New", monospace;
+  color: #33ff33;
+  text-shadow: 0 0 6px rgba(51, 255, 51, 0.45);
+}
+body.term center {
+  text-align: left;
+}
+body.term hr {
+  display: none;
+}
+body.term table,
+body.term td,
+body.term tr {
+  width: auto;
+  border: 0 !important;
+  background: transparent !important;
+}
+body.term {
+  font-size: 20px;
+  line-height: 1.5;
+}
+body.term font {
+  display: block;
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding: 28px 32px;
+}
+#banner {
+  height: 150px;
+  width: 640px;
+  margin: 16px auto 12px;
+  background: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+#hitsheet {
+  width: 640px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 0 0 16px 16px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+}
+#hitsheet td {
+  border: 0;
+}
+body.term #hitsheet {
+  width: auto;
+  margin: 0;
+  background: transparent !important;
+  border: 0;
+  border-radius: 0;
+}
+#banner a {
+  display: block;
+  line-height: 0;
+  border: 0;
+}
+#banner img {
+  height: 120px;
+  width: auto;
+  display: block;
+  border: 0;
+}
+#who {
+  display: none;
+}
+body.term #who {
+  display: block;
+}
+body.term #banner {
+  display: none;
+}
+#lock {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 20;
+  align-items: center;
+  justify-content: center;
+}
+#lock-box {
+  width: 320px;
+  background: #c0c0c0;
+  border: 2px solid #000000;
+  padding: 16px 12px;
+  text-align: center;
+}
+#lock-pw {
+  width: 220px;
+}
+#scare-frame {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  z-index: 40;
+  background: #000000;
+  transform: translateX(-110%);
+}
+#scare-frame.show {
+  transform: none;
+}
+</style>
+</head>
+<body bgcolor="#c0c0c0" text="#000000" link="#0000ff" vlink="#800080">
+<center>
+<font face="Times New Roman, Times, serif">
+<h2 id="who"></h2>
+<div id="banner"><a href="H.search.html" target="_blank"><img src="素材/LOGO.png" alt=""></a></div>
+<table id="hitsheet" width="640" cellpadding="16" cellspacing="0" bgcolor="#ffffff">
+<tr><td>
+<p><b>搜尋結果</b></p>
+<div id="hits"></div>
+</td></tr>
+</table>
+</font>
+</center>
+<div id="lock">
+<div id="lock-box">
+<font face="Times New Roman, Times, serif">
+<p><b>上鎖了</b></p>
+<form onsubmit="return checkLock();">
+<p><input type="text" id="lock-pw" size="16" autocomplete="off" spellcheck="false" lang="zh-Hant"></p>
+<p><input type="submit" value="打開"></p>
+<p><font color="#ff0000" id="lock-msg"></font></p>
+</form>
+</font>
+</div>
+</div>
+<!-- 密碼打對後，這一頁蓋上來。(*) 停住再變多，歌一斷就進人名頁 -->
+<iframe id="scare-frame" src="B跳轉.html?v=15" title="(*)"></iframe>
+<script src="search-db.js?v=37"></script>
+<script src="d-search-db.js?v=13"></script>
+<script>
+var q = "";
+var useD = false;
+var query = location.search.replace(/^\?/, "").split("&");
+var i;
+for (i = 0; i < query.length; i++) {
+  var pair = query[i].split("=");
+  if (pair[0] === "q") q = decodeURIComponent(pair.slice(1).join("=").replace(/\+/g, " "));
+  if (pair[0] === "db" && pair[1] === "d") useD = true;
+}
+q = q.replace(/\s/g, "");
+if (useD) {
+  document.body.className = "term";
+  document.getElementById("who").innerHTML = "D.search";
+  document.querySelector("b").innerHTML = "&gt; " + q;
+}
+var hits = document.getElementById("hits");
+var found = [];
+var n;
+var list = useD ? (typeof dSearchDb !== "undefined" ? dSearchDb : []) : searchDb;
+for (i = 0; i < list.length; i++) {
+  var keys = list[i].keys;
+  for (n = 0; n < keys.length; n++) {
+    if (keys[n] === q) {
+      found.push(list[i]);
+      break;
+    }
+  }
+}
+if (!found.length) {
+  hits.innerHTML = "<p>查無資料</p>";
+} else {
+  var html = "";
+  for (i = 0; i < found.length; i++) {
+    if (found[i].locked) {
+      html += "<p><a href=\"#\" onclick=\"openLock('" + found[i].page + "');return false;\">" + found[i].title + "</a></p>";
+    } else {
+      html += "<p><a href=\"" + found[i].page + "\">" + found[i].title + "</a></p>";
+    }
+  }
+  hits.innerHTML = html;
+}
+
+/* 點上鎖的結果時，在這一頁跳出密碼窗，不另開頁。B 的密碼是這句 */
+var lockNext = "";
+var lockPassword = "讓我再做一次好夢";
+
+function openLock(page) {
+  lockNext = page;
+  document.getElementById("lock-pw").value = "";
+  document.getElementById("lock-msg").innerHTML = "";
+  document.getElementById("lock").style.display = "flex";
+  return false;
+}
+
+function checkLock() {
+  var pw = document.getElementById("lock-pw").value;
+  if (lockPassword && pw === lockPassword) {
+    sessionStorage.setItem("bUnlocked", "1");
+    var frame = document.getElementById("scare-frame");
+    frame.className = "show";
+    if (frame.contentWindow && frame.contentWindow.startScare) {
+      frame.contentWindow.startScare(lockNext);
+    } else {
+      location.href = "B跳轉.html";
+    }
+  } else {
+    document.getElementById("lock-msg").innerHTML = "密碼錯誤";
+  }
+  return false;
+}
+</script>
+</body>
+</html>

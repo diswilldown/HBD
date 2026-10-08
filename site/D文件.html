@@ -1,0 +1,36 @@
+<!-- D.search 的 PDF。檔案本身加不了返回，這一層包在外面 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>D</title>
+<link rel="stylesheet" href="終端.css">
+<style>
+html, body { height: 100%; }
+body { box-sizing: border-box; }
+embed { display: block; width: 100%; height: calc(100% - 52px); border: 0; }
+</style>
+</head>
+<body>
+<embed id="doc" type="application/pdf">
+<p class="back"><a href="D.search.html">返回</a></p>
+<script>
+var files = {
+  "D-123.pdf": "爆炸事件紀錄 123",
+  "D-med.pdf": "藥歷",
+  "D的蒐證.pdf": "H 的汙點紀錄"
+};
+var name = "";
+var query = location.search.replace(/^\?/, "").split("&");
+var i;
+for (i = 0; i < query.length; i++) {
+  var pair = query[i].split("=");
+  if (pair[0] === "f") name = decodeURIComponent(pair.slice(1).join("="));
+}
+if (files[name]) {
+  document.title = files[name];
+  document.getElementById("doc").src = "pdf/" + name;
+}
+</script>
+</body>
+</html>

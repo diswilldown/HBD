@@ -1,0 +1,62 @@
+/* D 這邊的文件。和 D.search 一樣的黑底綠字終端機 */
+html, body {
+  margin: 0;
+  background: #000000;
+  color: #33ff33;
+}
+body {
+  font-family: Consolas, "Courier New", "Microsoft JhengHei", monospace;
+  font-size: 18px;
+  line-height: 1.6;
+  text-shadow: 0 0 6px rgba(51, 255, 51, 0.45);
+  padding: 28px 32px;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.18) 0 1px,
+    transparent 1px 3px
+  );
+}
+p {
+  margin: 0 0 8px;
+  max-width: 46em;
+}
+.sec {
+  margin: 22px 0 8px;
+}
+.dim {
+  color: #1f9a1f;
+  text-shadow: none;
+}
+.warn {
+  color: #ff3b3b;
+  text-shadow: 0 0 6px rgba(255, 59, 59, 0.45);
+}
+.cut {
+  background: #33ff33;
+  color: #33ff33;
+}
+table.log {
+  border-collapse: collapse;
+  color: #33ff33;
+}
+.back {
+  margin-top: 36px;
+}
+.back a {
+  color: #33ff33;
+}
+table.log th,
+table.log td {
+  border: 1px solid #33ff33;
+  padding: 4px 12px;
+  font-weight: normal;
+  text-align: left;
+  vertical-align: top;
+  background: transparent;
+}

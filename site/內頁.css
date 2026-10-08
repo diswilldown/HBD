@@ -1,0 +1,35 @@
+#logo {
+  height: 150px;
+  width: 640px;
+  margin: 16px auto 12px;
+  background: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+#logo a {
+  display: block;
+  line-height: 0;
+  border: 0;
+}
+#logo img {
+  height: 120px;
+  width: auto;
+  display: block;
+  border: 0;
+}
+table.sheet {
+  border: 1px solid #000000;
+  border-radius: 0 0 16px 16px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  background: #ffffff;
+}
+table.sheet td {
+  border: 0;
+}

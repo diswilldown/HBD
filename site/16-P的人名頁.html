@@ -1,0 +1,123 @@
+<!-- 16 P 的人名頁。搜尋 P 進來。H 這邊的人事檔 -->
+<!-- 新藥列表、藥歷只寫成文字，讓玩家自己去搜。儀器維持權限不足 -->
+<!-- 證件照拍攝日 08/20，和兩人吞藥同一天，頁上不解釋 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<title>P 的人名頁</title>
+<link rel="stylesheet" href="內頁.css">
+<link rel="stylesheet" href="檔案.css">
+<style>
+.filehead {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #111111;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: #333333;
+}
+.who {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.who table.file {
+  flex: 1;
+}
+.shot {
+  flex: none;
+  width: 148px;
+}
+.shot img {
+  display: block;
+  width: 148px;
+  height: 196px;
+  object-fit: cover;
+  object-position: center 18%;
+  border: 1px solid #111111;
+  filter: grayscale(1) contrast(1.05);
+}
+.shot p {
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #555555;
+}
+.log {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4px;
+}
+table.sheet .doc table.log th,
+table.sheet .doc table.log td {
+  border: 0;
+  border-bottom: 1px solid #dddddd;
+  padding: 3px 0;
+  font-size: 13px;
+  font-weight: normal;
+  text-align: left;
+  background: transparent;
+  font-family: Consolas, "Courier New", monospace;
+}
+table.sheet .doc table.log th {
+  width: 132px;
+  color: #777777;
+}
+</style>
+</head>
+<body bgcolor="#c0c0c0" text="#000000" link="#0000ff" vlink="#800080">
+<center>
+<font face="Times New Roman, Times, serif">
+<div id="logo"><a href="H.search.html" target="_blank"><img src="素材/LOGO.png" alt=""></a></div>
+<table class="sheet" width="640" cellpadding="16" cellspacing="0" bgcolor="#ffffff">
+<tr><td>
+<div class="doc">
+<p class="filehead"><span>人事檔案</span><span>編號 P-MED-02</span><span>密</span></p>
+<p class="stamp">死亡確認　09/13　23:41</p>
+<div class="who">
+<table class="file">
+<tr><th>代號</th><td>P</td></tr>
+<tr><th>職務</th><td>組織醫生<br>醫務室主任</td></tr>
+<tr><th>層級</th><td>12</td></tr>
+<tr><th>專長</th><td>藥理、神經</td></tr>
+<tr><th>理事會</th><td>有表決權</td></tr>
+<tr><th>在職狀態</th><td>死亡。案件 EX-0913。</td></tr>
+<tr><th>檔案狀態</th><td>封存。調閱需 H 核准。</td></tr>
+</table>
+<div class="shot">
+<img src="素材/P證件照.jpg" alt="">
+<p>證件照<br>08/20　醫務室拍攝<br>底片未歸還</p>
+</div>
+</div>
+
+<p class="part">職務</p>
+<p>外勤人員的體檢與配藥，全部由醫務室辦理。組織裡每一顆藥，都經過他的手。</p>
+<p>開立紀錄登記在個人藥歷。本檔不附。</p>
+
+<p class="part">研發</p>
+<p>研發部門掛名負責人。登錄過的品項收在新藥列表。</p>
+<p>相關儀器：<span class="cut">　　　　　　　　</span>　權限不足。</p>
+
+<p class="part">09/13</p>
+<p>死亡時間 23:41。地點：二樓包廂。該包廂由本人於當日預訂。</p>
+<p>預訂事由：空白。沒有告訴任何人那頓飯要談什麼。</p>
+
+<p class="part">調閱紀錄</p>
+<table class="log">
+<tr><th>09/14　03:12</th><td>H　封存。醫務室上鎖。</td></tr>
+<tr><th>09/14　03:14</th><td>查閱失敗。權限不足。</td></tr>
+<tr><th>09/20　00:06</th><td>H　調閱。未留下查閱頁數。</td></tr>
+</table>
+
+
+</div>
+</td></tr>
+</table>
+</font>
+</center>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!-- J 的個人資料。搜尋 J 進來。小小個人檔案，右邊空著給大頭貼 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<title>J 的個人資料</title>
+<link rel="stylesheet" href="內頁.css">
+<style>
+.card {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+}
+.card td {
+  vertical-align: top;
+}
+.head {
+  margin: 0 0 8px;
+  font-size: 15px;
+  color: #c46b84;
+}
+table.grid {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #e7a8b8;
+}
+table.sheet table.grid th,
+table.sheet table.grid td {
+  border: 1px solid #f0c2ce;
+  padding: 5px 10px;
+  font-size: 15px;
+  font-weight: normal;
+  text-align: left;
+  background: #fffafb;
+  line-height: 1.35;
+}
+table.sheet table.grid th {
+  width: 88px;
+  background: #ffe8ee;
+  color: #a85a6e;
+}
+.pic {
+  width: 148px;
+  height: 1px;
+  padding: 0 0 0 14px;
+}
+.face {
+  box-sizing: border-box;
+  width: 132px;
+  height: 100%;
+  border: 1px solid #e7a8b8;
+  border-radius: 12px;
+  background: #fffafb;
+  overflow: hidden;
+}
+.face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+.h-note {
+  display: none;
+  position: relative;
+  margin: 12px 0 0;
+  padding: 8px 52px 8px 10px;
+  border: 1px dashed #e7a8b8;
+  background: #fffafb;
+  font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #333333;
+  text-align: left;
+}
+.h-note.show {
+  display: block;
+}
+#h-reply {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+  font-size: 13px;
+  color: #a85a6e;
+  text-decoration: underline;
+  cursor: pointer;
+}
+#j-form {
+  padding-right: 10px;
+}
+#j-text {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 4px 0 0;
+  padding: 4px 6px;
+  border: 1px solid #f0c2ce;
+  background: #ffffff;
+  font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+  font-size: 14px;
+  color: #333333;
+  resize: vertical;
+}
+#j-send {
+  display: block;
+  margin: 4px 0 0 auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+  font-size: 13px;
+  color: #a85a6e;
+  text-decoration: underline;
+  cursor: pointer;
+}
+#j-note {
+  padding-right: 10px;
+}
+#j-body {
+  white-space: pre-wrap;
+}
+#h-open-row {
+  margin: 4px 0 0;
+  text-align: center;
+}
+#h-open {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+  font-size: 14px;
+  color: #a85a6e;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.h-note b {
+  display: block;
+  margin: 0 0 2px;
+  color: #a85a6e;
+  font-weight: normal;
+}
+</style>
+</head>
+<body bgcolor="#c0c0c0" text="#000000" link="#0000ff" vlink="#800080">
+<center>
+<font face="Times New Roman, Times, serif">
+<div id="logo"><a href="H.search.html" target="_blank"><img src="素材/LOGO.png" alt=""></a></div>
+<table class="sheet" width="640" cellpadding="16" cellspacing="0" bgcolor="#ffffff">
+<tr><td>
+<p class="head">個人檔案</p>
+<table class="card">
+<tr>
+<td>
+<table class="grid">
+<tr><th>代號</th><td>J</td></tr>
+<tr><th>負責人</th><td>H</td></tr>
+<tr><th>案件代號</th><td>D-001</td></tr>
+<tr><th>生日</th><td>04/26</td></tr>
+<tr><th>層級</th><td>3</td></tr>
+<tr><th>喜好</th><td>躺著</td></tr>
+</table>
+</td>
+<td class="pic">
+<div class="face"><img src="素材/J大頭貼.png" alt=""></div>
+</td>
+</tr>
+</table>
+<!-- H 的留言先藏著。點展開才出現。回覆在框的右邊，寫下的話留在這台瀏覽器 -->
+<p id="h-open-row"><button type="button" id="h-open">展開</button></p>
+<p class="h-note" id="h-note"><b>H 的留言</b>已批閱 請根據規定重新繳交<button type="button" id="h-reply">回覆</button></p>
+<form id="j-form" class="h-note" onsubmit="return saveJReply();">
+<b>J 的留言</b>
+<textarea id="j-text" rows="2"></textarea>
+<button type="submit" id="j-send">送出</button>
+</form>
+<p class="h-note" id="j-note"><b>J 的留言</b><span id="j-body"></span></p>
+<script>
+var jReplyKey = "jProfileReply";
+
+function showJReply() {
+  var saved = localStorage.getItem(jReplyKey) || "";
+  if (!saved) return;
+  document.getElementById("j-body").textContent = saved;
+  document.getElementById("j-note").className = "h-note show";
+  document.getElementById("h-reply").style.display = "none";
+  document.getElementById("j-form").className = "h-note";
+}
+
+function saveJReply() {
+  var text = document.getElementById("j-text").value.replace(/^\s+|\s+$/g, "");
+  if (!text) return false;
+  localStorage.setItem(jReplyKey, text);
+  showJReply();
+  return false;
+}
+
+document.getElementById("h-open").onclick = function () {
+  this.parentNode.style.display = "none";
+  document.getElementById("h-note").className = "h-note show";
+  showJReply();
+};
+
+document.getElementById("h-reply").onclick = function () {
+  this.style.display = "none";
+  document.getElementById("j-form").className = "h-note show";
+  document.getElementById("j-text").focus();
+};
+</script>
+</td></tr>
+</table>
+</font>
+</center>
+</body>
+</html>

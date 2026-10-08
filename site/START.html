@@ -1,0 +1,183 @@
+<!-- 入口 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<title>入口</title>
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+}
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#pw {
+  text-align: center;
+}
+#pw.masked {
+  -webkit-text-security: disc;
+  text-align: center;
+}
+#pop {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.35);
+  align-items: center;
+  justify-content: center;
+}
+#pop.show {
+  display: flex;
+}
+#box {
+  width: 360px;
+  background: #c0c0c0;
+  border: 2px solid #ffffff;
+  border-right-color: #404040;
+  border-bottom-color: #404040;
+  padding: 18px;
+}
+#track {
+  height: 22px;
+  background: #ffffff;
+  border: 2px solid #404040;
+  border-right-color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+#fill {
+  height: 100%;
+  width: 0;
+  background: #000080;
+}
+#flash {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  background: #000000;
+  align-items: center;
+  justify-content: center;
+}
+#flash.show {
+  display: flex;
+}
+#mark {
+  margin: 0;
+  color: #ff0000;
+  font-size: 72px;
+  font-family: Consolas, "Courier New", monospace;
+  animation: flash 0.5s linear 1;
+}
+@keyframes flash {
+  0% { opacity: 1; }
+  49% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 0; }
+}
+</style>
+</head>
+<body bgcolor="#c0c0c0" text="#000000" link="#0000ff" vlink="#800080">
+<center>
+<font face="Times New Roman, Times, serif">
+<table width="640" border="1" cellpadding="10" bgcolor="#ffffff">
+<tr><td align="center">
+<p><b></b></p>
+<p></p>
+<form onsubmit="return enterSearch();">
+<p>
+
+<input type="text" id="pw" size="20" autocomplete="off" spellcheck="false" lang="zh-Hant">
+<input type="submit" value="連接">
+</p>
+<p><font color="#ff0000" id="msg"></font></p>
+</form>
+</td></tr>
+</table>
+</font>
+</center>
+<div id="pop">
+<div id="box">
+<div id="track"><div id="fill"></div></div>
+</div>
+</div>
+<div id="flash"><p id="mark">(*)</p></div>
+<script>
+var pwInput = document.getElementById("pw");
+var maskTimer = null;
+var pwComposing = false;
+
+function showPw() {
+  pwInput.className = "";
+}
+
+function queueMask() {
+  clearTimeout(maskTimer);
+  maskTimer = setTimeout(function () {
+    if (!pwComposing) pwInput.className = "masked";
+  }, 1000);
+}
+
+pwInput.addEventListener("compositionstart", function () {
+  pwComposing = true;
+  clearTimeout(maskTimer);
+  showPw();
+});
+
+pwInput.addEventListener("compositionend", function () {
+  pwComposing = false;
+  queueMask();
+});
+
+pwInput.addEventListener("input", function () {
+  if (pwComposing) return;
+  showPw();
+  queueMask();
+});
+
+var connecting = false;
+
+function enterSearch() {
+  var pw = pwInput.value;
+  if (connecting) return false;
+  if (pw !== "屁眼") {
+    document.getElementById("msg").innerHTML = "密碼錯誤";
+    return false;
+  }
+  document.getElementById("msg").innerHTML = "";
+  connecting = true;
+  var pop = document.getElementById("pop");
+  var fill = document.getElementById("fill");
+  pop.className = "show";
+  fill.style.width = "0%";
+  var n = 0;
+  var timer = setInterval(function () {
+    n += 2;
+    if (n > 100) n = 100;
+    fill.style.width = n + "%";
+    if (n >= 100) {
+      clearInterval(timer);
+      pop.className = "";
+      document.getElementById("flash").className = "show";
+      setTimeout(function () {
+        window.open("H.search.html", "_blank");
+        document.getElementById("flash").className = "";
+        fill.style.width = "0%";
+        connecting = false;
+      }, 500);
+    }
+  }, 40);
+  return false;
+}
+</script>
+</body>
+</html>

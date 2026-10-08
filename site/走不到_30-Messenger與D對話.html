@@ -1,0 +1,114 @@
+<!-- D 第一次接管 Messenger。解開 B 的人名頁後抵達，D 給 d.search 與第一組關鍵字 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Messenger</title>
+<style>
+html, body {
+  min-height: 100%;
+  margin: 0;
+  background: #080808;
+  color: #d8d8d8;
+}
+body {
+  box-sizing: border-box;
+  padding: 30px 18px;
+  font-family: Consolas, "Courier New", "Microsoft JhengHei", monospace;
+}
+.window {
+  width: 640px;
+  max-width: 100%;
+  margin: 0 auto;
+  border: 1px solid #555555;
+  background: #111111;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+}
+.bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: #d7d7d7;
+  color: #111111;
+  font: 13px Arial, sans-serif;
+}
+.log {
+  min-height: 420px;
+  padding: 20px 24px 28px;
+}
+.line {
+  margin: 0 0 13px;
+  line-height: 1.6;
+}
+.h {
+  color: #aaaaaa;
+}
+.system {
+  margin: 30px 0;
+  color: #ff4040;
+  text-align: center;
+  letter-spacing: 0.12em;
+}
+.d {
+  color: #33ff33;
+  text-shadow: 0 0 6px rgba(51, 255, 51, 0.45);
+}
+.keys {
+  margin: 22px 0;
+  padding: 12px 16px;
+  border-left: 2px solid #33ff33;
+  color: #33ff33;
+  background: #071107;
+}
+.keys code {
+  display: block;
+  margin: 4px 0;
+  font: inherit;
+}
+.enter {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 8px 13px;
+  border: 1px solid #33ff33;
+  color: #33ff33;
+  text-decoration: none;
+}
+.enter:hover {
+  color: #000000;
+  background: #33ff33;
+  text-shadow: none;
+}
+.cursor {
+  display: inline-block;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+</style>
+</head>
+<body>
+<main class="window">
+<div class="bar"><span>Messenger</span><span>SECURE CHANNEL</span></div>
+<section class="log">
+<p class="line h">H：密碼是「讓我再做一次好夢」。</p>
+<p class="line h">H：那是 D 鎖起來的東西。打開以後不要相信任何突然出現的訊息。</p>
+
+<p class="system">— CONNECTION INTERRUPTED —</p>
+
+<p class="line d">D：他連最後一句都要先替我說。</p>
+<p class="line d">D：你剛才看見的，是 H 想讓你看見的。現在看另一份。</p>
+<p class="line d">D：我把同一件事的檔案都掛在原本的編號下面了。</p>
+
+<div class="keys">
+<code>&gt; 123</code>
+</div>
+
+<p class="line d">D：查一次就夠了。自己看他藏了多少東西。</p>
+<p class="line d">D：看完再決定，誰在說謊。<span class="cursor">_</span></p>
+
+<a class="enter" href="D.search.html">OPEN D.search</a>
+</section>
+</main>
+</body>
+</html>

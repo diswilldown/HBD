@@ -1,0 +1,233 @@
+<!-- B 的跳轉。密碼打對後 (*) 停在黑畫面上，慢慢變多，歌播一下就切走人名頁 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>(*)</title>
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #000000;
+  overflow: hidden;
+}
+#field {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.mark {
+  position: absolute;
+  margin: 0;
+  color: #ff0000;
+  font-family: Consolas, "Courier New", monospace;
+  line-height: 1;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+}
+.core {
+  z-index: 7;
+}
+.hand {
+  position: absolute;
+  height: 260px;
+  width: auto;
+  z-index: 6;
+  opacity: 0;
+  pointer-events: none;
+}
+.hand.on {
+  opacity: 1;
+}
+#hand-l {
+  top: 44%;
+  right: calc(50% + 53px);
+  transform: translateY(-36%);
+}
+#hand-r {
+  top: 44%;
+  left: calc(50% + 53px);
+  transform: translateY(-42%);
+}
+</style>
+</head>
+<body>
+<div id="field"></div>
+<audio id="dream" preload="auto"></audio>
+<script>
+/* 從 1:18 往回倒放約 3.6 秒，做成音檔後用播放器播。密碼打對前就先備好 */
+var scareReady = false;
+
+function bufferToWav(buffer) {
+  var channels = buffer.numberOfChannels;
+  var rate = buffer.sampleRate;
+  var samples = buffer.length;
+  var bytes = samples * channels * 2;
+  var raw = new ArrayBuffer(44 + bytes);
+  var view = new DataView(raw);
+  function write(offset, text) {
+    var n;
+    for (n = 0; n < text.length; n++) view.setUint8(offset + n, text.charCodeAt(n));
+  }
+  write(0, "RIFF");
+  view.setUint32(4, 36 + bytes, true);
+  write(8, "WAVE");
+  write(12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, channels, true);
+  view.setUint32(24, rate, true);
+  view.setUint32(28, rate * channels * 2, true);
+  view.setUint16(32, channels * 2, true);
+  view.setUint16(34, 16, true);
+  write(36, "data");
+  view.setUint32(40, bytes, true);
+  var data = [];
+  var c;
+  var i;
+  var offset = 44;
+  var sample;
+  for (c = 0; c < channels; c++) data.push(buffer.getChannelData(c));
+  for (i = 0; i < samples; i++) {
+    for (c = 0; c < channels; c++) {
+      sample = data[c][i];
+      if (sample > 1) sample = 1;
+      if (sample < -1) sample = -1;
+      view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+      offset += 2;
+    }
+  }
+  return new Blob([raw], { type: "audio/wav" });
+}
+
+function prepReverse() {
+  var AC = window.AudioContext || window.webkitAudioContext;
+  var audio = document.getElementById("dream");
+  if (!AC) return;
+  var ctx = new AC();
+  fetch("素材/再做一次好夢.mp3")
+    .then(function (r) { return r.arrayBuffer(); })
+    .then(function (buf) { return ctx.decodeAudioData(buf); })
+    .then(function (full) {
+      var rate = full.sampleRate;
+      var end = Math.min(full.length, Math.floor(78 * rate));
+      var start = Math.max(0, end - Math.floor(3.5 * rate));
+      var len = end - start;
+      var rev = ctx.createBuffer(full.numberOfChannels, len, rate);
+      var c;
+      var i;
+      for (c = 0; c < full.numberOfChannels; c++) {
+        var src = full.getChannelData(c);
+        var dst = rev.getChannelData(c);
+        for (i = 0; i < len; i++) dst[i] = src[end - 1 - i];
+      }
+      audio.src = URL.createObjectURL(bufferToWav(rev));
+      audio.load();
+      scareReady = true;
+      ctx.close();
+    });
+}
+
+/* 雙手先載好。最後出現時只亮 0.1 秒 */
+var handFileL = new Image();
+var handFileR = new Image();
+handFileL.src = "素材/手抓.png";
+handFileR.src = "素材/手張.png";
+
+prepReverse();
+
+/* 從密碼窗叫 startScare。自己打開這一頁時也會走同一段 */
+function startScare(next) {
+  if (window.scaring) return;
+  window.scaring = true;
+  var dest = next || "17-B的人名頁.html";
+  var audio = document.getElementById("dream");
+  var field = document.getElementById("field");
+  var spots = [
+    { x: 50, y: 44, s: 108, t: 0, pull: true },
+    { x: 76, y: 70, s: 72, t: 1000 },
+    { x: 18, y: 76, s: 72, t: 1280 },
+    { x: 86, y: 36, s: 72, t: 1540 },
+    { x: 34, y: 88, s: 72, t: 1820 },
+    { x: 63, y: 60, s: 72, t: 2140 },
+    { x: 12, y: 54, s: 72, t: 2400 },
+    { x: 91, y: 84, s: 72, t: 2620 }
+  ];
+  var i;
+  for (i = 0; i < spots.length; i++) {
+    var mark = document.createElement("p");
+    var spot = spots[i];
+    mark.className = "mark";
+    mark.style.left = spot.x + "%";
+    mark.style.top = spot.y + "%";
+    mark.style.fontSize = spot.s + "px";
+    if (spot.pull) {
+      mark.className = "mark core";
+      mark.textContent = "(*)";
+    } else {
+      mark.textContent = "(*)";
+    }
+    field.appendChild(mark);
+    (function (el, delay) {
+      setTimeout(function () {
+        el.style.opacity = "1";
+      }, delay);
+    })(mark, spot.t);
+  }
+  var handL = document.createElement("img");
+  var handR = document.createElement("img");
+  handL.id = "hand-l";
+  handR.id = "hand-r";
+  handL.className = "hand";
+  handR.className = "hand";
+  handL.src = handFileL.src;
+  handR.src = handFileR.src;
+  handL.alt = "";
+  handR.alt = "";
+  field.appendChild(handL);
+  field.appendChild(handR);
+  function leave() {
+    audio.pause();
+    if (window.parent && window.parent !== window) {
+      window.parent.location.href = dest;
+    } else {
+      location.href = dest;
+    }
+  }
+  function flashHands() {
+    handL.className = "hand on";
+    handR.className = "hand on";
+    setTimeout(leave, 100);
+  }
+  setTimeout(function () {
+    if (handL.complete && handR.complete && handL.naturalWidth) flashHands();
+    else {
+      var n = 0;
+      var waitHand = setInterval(function () {
+        n++;
+        if ((handL.complete && handR.complete && handL.naturalWidth) || n > 20) {
+          clearInterval(waitHand);
+          flashHands();
+        }
+      }, 40);
+    }
+  }, 3400);
+  function playReverse() {
+    if (!scareReady) return;
+    audio.currentTime = 0;
+    audio.play();
+  }
+  if (scareReady) playReverse();
+  else {
+    var waitSound = setInterval(function () {
+      if (!scareReady) return;
+      clearInterval(waitSound);
+      playReverse();
+    }, 40);
+  }
+}
+
+if (window.parent === window) startScare();
+</script>
+</body>
+</html>

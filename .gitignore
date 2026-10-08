@@ -1,0 +1,14 @@
+故事大綱.md
+對話記憶/
+網頁順序.md
+待辦.md
+Messenger台詞.md
+產生劇情PDF.py
+製作規則.md
+待提供.md
+pdf原稿/
+site/pages.txt
+site/build2.ps1
+site/pdf/make_event_pdf.py
+site/pdf/__pycache__/
+*.pyc

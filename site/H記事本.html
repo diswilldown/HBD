@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<title>H記事本</title>
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+}
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #c0c0c0;
+  font-family: "Times New Roman", Times, serif;
+}
+#book {
+  position: relative;
+  width: 460px;
+  height: 620px;
+  perspective: 1600px;
+}
+#pad {
+  position: absolute;
+  inset: 0 0 0 18px;
+  background: #f6f0e4;
+  border-radius: 2px 8px 8px 2px;
+  box-shadow:
+    12px 0 0 #efe6d4,
+    14px 0 0 #e4d9c4,
+    16px 0 0 #d9cdb6,
+    18px 1px 0 #cfc3ab,
+    8px 14px 22px rgba(0, 0, 0, 0.35);
+}
+#spine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  background:
+    radial-gradient(circle at 14px 16px, #1a1a1a 0 4px, #8a8a8a 5px, #d8d8d8 6px, transparent 7px) 0 10px / 28px 32px repeat-y,
+    linear-gradient(#6a6258, #3e3a34);
+  border-radius: 4px 0 0 4px;
+  z-index: 5;
+}
+#sheet, #leaf {
+  position: absolute;
+  left: 28px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0 8px 8px 0;
+  overflow: hidden;
+}
+#sheet {
+  z-index: 1;
+}
+#leaf {
+  z-index: 4;
+  transform-origin: left center;
+  pointer-events: none;
+  visibility: hidden;
+}
+#leaf.forward {
+  visibility: visible;
+  animation: turn-forward 0.55s ease-in-out forwards;
+}
+#leaf.back {
+  visibility: visible;
+  animation: turn-back 0.55s ease-in-out forwards;
+}
+@keyframes turn-forward {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(-180deg); }
+}
+@keyframes turn-back {
+  from { transform: rotateY(-180deg); }
+  to { transform: rotateY(0deg); }
+}
+.face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.face.back {
+  transform: rotateY(180deg);
+}
+.paper {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 36px 34px 28px 42px;
+  background-color: #fbf6ea;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    #d7deea 32px
+  );
+  background-position: 0 48px;
+  box-shadow: inset 28px 0 0 #f7d7d7;
+}
+.paper.cover {
+  background: #243328;
+  background-image: none;
+  box-shadow: none;
+  color: #f3ead7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.paper.cover b {
+  font-size: 36px;
+  font-weight: normal;
+  letter-spacing: 2px;
+}
+.words {
+  min-height: 480px;
+  font-size: 18px;
+  line-height: 32px;
+  white-space: pre-wrap;
+}
+.num {
+  position: absolute;
+  right: 52px;
+  bottom: 46px;
+  color: #8a8174;
+  font-size: 13px;
+}
+#prev, #next {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 72px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  z-index: 6;
+  cursor: pointer;
+}
+#prev { left: 28px; }
+#next { right: 0; }
+#next::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  border-style: solid;
+  border-width: 0 0 42px 42px;
+  border-color: transparent transparent #e7dcc6 transparent;
+  box-shadow: -2px -2px 0 rgba(0, 0, 0, 0.05);
+}
+#next.at-end { cursor: default; }
+#next.at-end::after { display: none; }
+#prev.at-start { cursor: default; }
+</style>
+</head>
+<body>
+<div id="book" hidden>
+<div id="pad"></div>
+<div id="spine"></div>
+<div id="sheet"></div>
+<div id="leaf">
+<div class="face front" id="leaf-front"></div>
+<div class="face back" id="leaf-back"></div>
+</div>
+<button id="prev" type="button" aria-label="上一頁"></button>
+<button id="next" type="button" aria-label="下一頁"></button>
+</div>
+<script>
+if (localStorage.getItem("noteOpen") !== "1") {
+  document.getElementById("book").insertAdjacentHTML("afterend", "<p id=\"note-locked\" style=\"font-family:Times New Roman,Times,serif\">帳號或密碼錯誤</p>");
+} else {
+document.getElementById("book").hidden = false;
+var pages = [
+  { cover: true, title: "H記事本" },
+  { text: "Unicode\n\n0021　!\n0023　#\n0028　(\n0029　)\n002A　*\n002B　+\n002E　.\n003E　&gt;\n0040　@" },
+  { text: "\n\n\n<span style=\"font-size:40px\">j&gt;b</span>" },
+  { text: "\n\npackage : 0426" },
+  { text: "<div style=\"margin:30px auto 0;width:250px;padding:18px 16px 12px;background:#fff6a8;box-shadow:3px 4px 0 rgba(0,0,0,0.15);transform:rotate(-3deg);line-height:28px;font-family:KaiTi,serif\">對不起<br>我把水打翻了<br>你桌上的文件我有擦乾<br>　　　　　　— B<svg viewBox=\"0 0 60 50\" width=\"60\" height=\"50\" style=\"display:block;margin:6px 0 0 auto\"><polygon points=\"14,22 12,4 26,16\" fill=\"#c46a52\" stroke=\"#1a1a1a\"/><polygon points=\"46,22 48,4 34,16\" fill=\"#c46a52\" stroke=\"#1a1a1a\"/><line x1=\"12\" y1=\"4\" x2=\"10\" y2=\"-2\" stroke=\"#1a1a1a\" stroke-width=\"2\"/><line x1=\"48\" y1=\"4\" x2=\"50\" y2=\"-2\" stroke=\"#1a1a1a\" stroke-width=\"2\"/><ellipse cx=\"30\" cy=\"30\" rx=\"18\" ry=\"15\" fill=\"#c46a52\" stroke=\"#1a1a1a\"/><circle cx=\"23\" cy=\"28\" r=\"2\"/><circle cx=\"37\" cy=\"28\" r=\"2\"/><path d=\"M27 35 Q30 38 33 35\" fill=\"none\" stroke=\"#1a1a1a\"/></svg></div>" },
+  { text: "反向攻擊那次帶回來的。\n\n使用方法那一段，\n我從檔案裡拿掉了。\n\n放在這裡。\n\n<a href=\"38-使用方法.html\" target=\"_blank\">D 的武器</a>" },
+  { text: "" }
+];
+var index = 0;
+var turning = false;
+
+function paperHtml(page, number) {
+  if (page.cover) {
+    return "<div class=\"paper cover\"><b>" + page.title + "</b></div>";
+  }
+  return "<div class=\"paper\"><div class=\"words\">" + page.text + "</div><div class=\"num\">" + number + "</div></div>";
+}
+
+function render() {
+  var sheet = document.getElementById("sheet");
+  var shown = index === 0 ? "" : index;
+  sheet.innerHTML = paperHtml(pages[index], shown);
+  document.getElementById("prev").className = index === 0 ? "at-start" : "";
+  document.getElementById("next").className = index === pages.length - 1 ? "at-end" : "";
+}
+
+function turn(dir) {
+  if (turning) return;
+  var next = index + dir;
+  if (next < 0 || next >= pages.length) return;
+  turning = true;
+  var leaf = document.getElementById("leaf");
+  var from = paperHtml(pages[index], index === 0 ? "" : index);
+  var to = paperHtml(pages[next], next === 0 ? "" : next);
+  if (dir > 0) {
+    document.getElementById("leaf-front").innerHTML = from;
+    document.getElementById("leaf-back").innerHTML = to;
+    leaf.className = "forward";
+  } else {
+    document.getElementById("leaf-front").innerHTML = to;
+    document.getElementById("leaf-back").innerHTML = from;
+    leaf.className = "back";
+  }
+  setTimeout(function () {
+    index = next;
+    render();
+    leaf.className = "";
+    turning = false;
+  }, 540);
+}
+
+document.getElementById("next").onclick = function () { turn(1); };
+document.getElementById("prev").onclick = function () { turn(-1); };
+render();
+}
+</script>
+</body>
+</html>
