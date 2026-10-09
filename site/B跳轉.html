@@ -55,78 +55,14 @@ html, body {
 <div id="field"></div>
 <audio id="dream" preload="auto"></audio>
 <script>
-/* 從 1:18 往回倒放約 3.6 秒，做成音檔後用播放器播。密碼打對前就先備好 */
+/* 倒轉片段已做成檔案：1:18 往回 7 秒，播放時兩倍速。進搜尋結果頁時就先載好 */
 var scareReady = false;
-
-function bufferToWav(buffer) {
-  var channels = buffer.numberOfChannels;
-  var rate = buffer.sampleRate;
-  var samples = buffer.length;
-  var bytes = samples * channels * 2;
-  var raw = new ArrayBuffer(44 + bytes);
-  var view = new DataView(raw);
-  function write(offset, text) {
-    var n;
-    for (n = 0; n < text.length; n++) view.setUint8(offset + n, text.charCodeAt(n));
-  }
-  write(0, "RIFF");
-  view.setUint32(4, 36 + bytes, true);
-  write(8, "WAVE");
-  write(12, "fmt ");
-  view.setUint32(16, 16, true);
-  view.setUint16(20, 1, true);
-  view.setUint16(22, channels, true);
-  view.setUint32(24, rate, true);
-  view.setUint32(28, rate * channels * 2, true);
-  view.setUint16(32, channels * 2, true);
-  view.setUint16(34, 16, true);
-  write(36, "data");
-  view.setUint32(40, bytes, true);
-  var data = [];
-  var c;
-  var i;
-  var offset = 44;
-  var sample;
-  for (c = 0; c < channels; c++) data.push(buffer.getChannelData(c));
-  for (i = 0; i < samples; i++) {
-    for (c = 0; c < channels; c++) {
-      sample = data[c][i];
-      if (sample > 1) sample = 1;
-      if (sample < -1) sample = -1;
-      view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
-      offset += 2;
-    }
-  }
-  return new Blob([raw], { type: "audio/wav" });
-}
-
-function prepReverse() {
-  var AC = window.AudioContext || window.webkitAudioContext;
-  var audio = document.getElementById("dream");
-  if (!AC) return;
-  var ctx = new AC();
-  fetch("素材/再做一次好夢.mp3")
-    .then(function (r) { return r.arrayBuffer(); })
-    .then(function (buf) { return ctx.decodeAudioData(buf); })
-    .then(function (full) {
-      var rate = full.sampleRate;
-      var end = Math.min(full.length, Math.floor(78 * rate));
-      var start = Math.max(0, end - Math.floor(7 * rate));
-      var len = end - start;
-      var rev = ctx.createBuffer(full.numberOfChannels, len, rate);
-      var c;
-      var i;
-      for (c = 0; c < full.numberOfChannels; c++) {
-        var src = full.getChannelData(c);
-        var dst = rev.getChannelData(c);
-        for (i = 0; i < len; i++) dst[i] = src[end - 1 - i];
-      }
-      audio.src = URL.createObjectURL(bufferToWav(rev));
-      audio.load();
-      scareReady = true;
-      ctx.close();
-    });
-}
+var dreamFile = document.getElementById("dream");
+dreamFile.addEventListener("canplaythrough", function () {
+  scareReady = true;
+});
+dreamFile.src = "素材/再做一次好夢-倒轉.wav";
+dreamFile.load();
 
 /* 雙手先載好。最後出現時只亮 0.1 秒 */
 var handFileL = new Image();
@@ -134,10 +70,8 @@ var handFileR = new Image();
 handFileL.src = "素材/手抓.png";
 handFileR.src = "素材/手張.png";
 
-prepReverse();
-
 /* 從密碼窗叫 startScare。自己打開這一頁時也會走同一段 */
-/* 先全黑至少一秒。音樂和雙手還沒載完就繼續黑著等，最多再等五秒 */
+/* 先全黑一秒。音樂和雙手還沒載完就再等，但最多黑兩秒 */
 function startScare(next) {
   if (window.scaring) return;
   window.scaring = true;
@@ -159,7 +93,7 @@ function startScare(next) {
   var wait = setInterval(function () {
     var ready = scareReady && handFileL.complete && handFileR.complete;
     var waited = Date.now() - began;
-    if ((ready && waited >= 1000) || waited >= 6000) {
+    if ((ready && waited >= 1000) || waited >= 2000) {
       clearInterval(wait);
       runScare(next);
     }
@@ -243,21 +177,10 @@ function runScare(next) {
       }, 40);
     }
   }, 3400);
-  function playReverse() {
-    if (!scareReady) return;
-    audio.muted = false;
-    audio.playbackRate = 2;
-    audio.currentTime = 0;
-    audio.play();
-  }
-  if (scareReady) playReverse();
-  else {
-    var waitSound = setInterval(function () {
-      if (!scareReady) return;
-      clearInterval(waitSound);
-      playReverse();
-    }, 40);
-  }
+  audio.muted = false;
+  audio.playbackRate = 2;
+  audio.currentTime = 0;
+  audio.play();
 }
 
 if (window.parent === window) startScare();
