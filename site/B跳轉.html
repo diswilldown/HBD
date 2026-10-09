@@ -141,6 +141,20 @@ prepReverse();
 function startScare(next) {
   if (window.scaring) return;
   window.scaring = true;
+  /* 瀏覽器只准在點擊當下開聲音，所以點「打開」時就先靜音播一下，之後才放得出來 */
+  var dream = document.getElementById("dream");
+  if (dream.src) {
+    dream.muted = true;
+    var primed = dream.play();
+    if (primed && primed.then) {
+      primed.then(function () {
+        dream.pause();
+        dream.muted = false;
+      }, function () {
+        dream.muted = false;
+      });
+    }
+  }
   var began = Date.now();
   var wait = setInterval(function () {
     var ready = scareReady && handFileL.complete && handFileR.complete;
@@ -231,6 +245,7 @@ function runScare(next) {
   }, 3400);
   function playReverse() {
     if (!scareReady) return;
+    audio.muted = false;
     audio.playbackRate = 2;
     audio.currentTime = 0;
     audio.play();
