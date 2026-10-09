@@ -211,6 +211,9 @@ function runScare(next) {
     handL.className = "hand on";
     handR.className = "hand on";
     audio.pause();
+    setTimeout(function () {
+      field.style.visibility = "hidden";
+    }, 100);
     setTimeout(leave, 500);
   }
   setTimeout(function () {
