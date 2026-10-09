@@ -210,7 +210,8 @@ function runScare(next) {
   function flashHands() {
     handL.className = "hand on";
     handR.className = "hand on";
-    setTimeout(leave, 100);
+    audio.pause();
+    setTimeout(leave, 500);
   }
   setTimeout(function () {
     if (handL.complete && handR.complete && handL.naturalWidth) flashHands();
