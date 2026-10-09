@@ -1,212 +1,91 @@
-<!-- B.search 擊殺自己 -->
-<!-- 用來殺自己的搜尋頁。外觀跟 D.search 一樣，搜尋詞對上 b-search-db.js 才會打中 -->
+<!-- B.kill。鬧鐘打 B.search 進來。樣子跟 B.search 一樣，字都變成擊殺。只有輸入擊殺才進真結局 -->
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
-<base target="_blank">
 <title>B.kill</title>
 <style>
 html, body {
   height: 100%;
   margin: 0;
-  background: #000000;
-  color: #33ff33;
+  background: #c0c0c0;
+  overflow: hidden;
 }
 body {
-  font-family: Consolas, "Courier New", monospace;
-  font-size: 20px;
-  line-height: 1.5;
-  text-shadow: 0 0 6px rgba(51, 255, 51, 0.45);
-}
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.18) 0 1px,
-    transparent 1px 3px
-  );
-}
-#screen {
-  position: relative;
-  box-sizing: border-box;
-  height: 100%;
-  overflow: auto;
-  padding: 28px 32px;
-}
-#log p, #screen > p {
-  margin: 0 0 8px;
-}
-a {
-  color: #33ff33;
-}
-.row {
   display: flex;
   align-items: center;
+  justify-content: center;
+  font-family: "Times New Roman", Times, serif;
+  color: #000000;
 }
-.prompt {
-  white-space: pre;
+/* 滑鼠換成鬧鐘。熱點在圓面中間 */
+html, body, body * {
+  cursor: url("素材/cursor-clock.png") 49 39, auto !important;
 }
-.type {
-  position: relative;
-  flex: 1;
-  min-height: 1.5em;
+#page {
+  width: 640px;
 }
-#typed {
-  white-space: pre;
+#banner {
+  height: 150px;
+  background: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  letter-spacing: 2px;
 }
-.cursor {
-  display: inline-block;
-  animation: blink 1s steps(1) infinite;
+#nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d4d0c8;
+  border: 1px solid #000000;
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  padding: 14px 12px;
 }
-@keyframes blink {
-  50% { opacity: 0; }
+#search {
+  margin: 0;
 }
-input {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  color: transparent;
-  caret-color: transparent;
-  font: inherit;
-  outline: none;
+#q {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+}
+#miss {
+  display: block;
+  min-height: 1.2em;
+  margin-top: 6px;
+  text-align: center;
+  color: #ff0000;
 }
 </style>
 </head>
-<body>
-<div id="screen">
-<p>擊殺.擊殺擊殺擊殺擊殺擊殺擊殺</p>
-<div id="log"></div>
-<form id="line">
-<div class="row">
-<span class="prompt">&gt; </span>
-<span class="type">
-<span id="typed"></span><span class="cursor">_</span>
-<input type="text" id="q" name="q" autocomplete="off" spellcheck="false" autofocus>
-</span>
-</div>
+<body bgcolor="#c0c0c0" text="#000000">
+<div id="page">
+<div id="banner">擊殺.擊殺擊殺</div>
+<div id="nav">
+<form id="search">
+<input type="text" id="q" size="28" autocomplete="off" spellcheck="false" lang="zh-Hant" autofocus>
+<input type="submit" value="擊殺">
+<span id="miss"></span>
 </form>
 </div>
-<script src="b-search-db.js?v=5"></script>
+</div>
 <script>
-var storeKey = "B.kill";
-var log = [];
-
-function esc(text) {
-  return String(text)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-function loadLog() {
-  try {
-    var saved = JSON.parse(localStorage.getItem(storeKey));
-    if (saved && saved.length) log = saved;
-  } catch (e) {}
-}
-
-function saveLog() {
-  localStorage.setItem(storeKey, JSON.stringify(log));
-}
-
-function findHits(q) {
-  var found = [];
-  var i, n;
-  if (typeof bSearchDb === "undefined") return found;
-  for (i = 0; i < bSearchDb.length; i++) {
-    var keys = bSearchDb[i].keys;
-    for (n = 0; n < keys.length; n++) {
-      if (keys[n] === q) {
-        found.push(bSearchDb[i]);
-        break;
-      }
-    }
-  }
-  return found;
-}
-
-function render() {
-  var html = "";
-  var i, n, hits;
-  for (i = 0; i < log.length; i++) {
-    html += "<p>&gt; " + esc(log[i].q) + "</p>";
-    hits = log[i].hits;
-    if (!hits.length) {
-      html += "<p>擊殺擊殺擊殺擊殺擊殺</p>";
-    } else {
-      html += "<p>擊殺擊殺擊殺 ";
-      for (n = 0; n < hits.length; n++) {
-        html += "<a href=\"" + esc(hits[n].page) + "\" target=\"_blank\">" + esc(hits[n].title) + "</a>";
-      }
-      html += "</p>";
-    }
-  }
-  document.getElementById("log").innerHTML = html;
-  var screen = document.getElementById("screen");
-  screen.scrollTop = screen.scrollHeight;
-}
-
-function ask(raw) {
-  var q = String(raw).replace(/\s/g, "");
-  if (!q) return;
+document.getElementById("search").addEventListener("submit", function (e) {
+  var q = document.getElementById("q").value.replace(/\s/g, "");
+  var miss = document.getElementById("miss");
+  e.preventDefault();
   if (q === "擊殺") {
     location.assign("endingB.html");
     return;
   }
-  var hits = findHits(q);
-  var kept = [];
-  var i;
-  for (i = 0; i < hits.length; i++) {
-    kept.push({ title: hits[i].title, page: hits[i].page });
-    if (hits[i].open) window.open(hits[i].page, "_blank");
-  }
-  log.push({ q: q, hits: kept });
-  saveLog();
-  render();
-}
-
-var qInput = document.getElementById("q");
-
-function showTyped() {
-  document.getElementById("typed").textContent = qInput.value;
-}
-
-qInput.addEventListener("input", showTyped);
-
-document.getElementById("line").onsubmit = function () {
-  ask(qInput.value);
-  qInput.value = "";
-  showTyped();
-  return false;
-};
-
-document.getElementById("screen").onclick = function (event) {
-  if (event.target.tagName === "A" || event.target.tagName === "INPUT") return;
-  qInput.focus();
-};
-
-loadLog();
-render();
-
-/* 點到只寫著擊殺的字，也進真結局 */
-document.addEventListener("click", function (e) {
-  var el = e.target;
-  var text;
-  if (!el || el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "A") return;
-  text = el.textContent || "";
-  if (text.indexOf("擊殺") === -1) return;
-  if (/[A-Za-z0-9\u4e00-\u9fff]/.test(text.replace(/擊殺/g, ""))) return;
-  location.assign("endingB.html");
+  miss.textContent = "";
+  setTimeout(function () {
+    miss.textContent = "擊殺擊殺擊殺擊殺";
+  }, 120);
 });
 </script>
 <script src="kill-marks.js"></script>
