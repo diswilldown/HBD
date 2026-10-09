@@ -279,11 +279,12 @@ function jumpEye() {
   eyeShown = true;
   setTimeout(function () {
     eye.className = "show";
-    setTimeout(function () {
-      eye.className = "";
-    }, 700);
   }, 450);
 }
+
+document.getElementById("eye").addEventListener("click", function () {
+  this.className = "";
+});
 
 document.getElementById("next").onclick = function () { turn(1); };
 document.getElementById("prev").onclick = function () { turn(-1); };
