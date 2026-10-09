@@ -157,6 +157,46 @@ body {
 #next.at-end { cursor: default; }
 #next.at-end::after { display: none; }
 #prev.at-start { cursor: default; }
+/* 便條紙。手寫圖的白底用相乘疊掉，只留筆跡在黃紙上 */
+.sticky {
+  margin: 30px auto 0;
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+  background: #fff6a8;
+  box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.15);
+  transform: rotate(-3deg);
+  line-height: 0;
+}
+.sticky img {
+  width: 100%;
+  margin-top: -45px;
+  display: block;
+  mix-blend-mode: multiply;
+}
+/* 翻過便條紙的下一頁，眼睛從中間衝出來 */
+#eye {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: #000000;
+  align-items: center;
+  justify-content: center;
+}
+#eye.show {
+  display: flex;
+}
+#eye img {
+  width: 92vw;
+  max-width: 1400px;
+  animation: lunge 0.7s ease-out forwards;
+}
+@keyframes lunge {
+  0% { transform: scale(0.35); }
+  18% { transform: scale(1.08); }
+  100% { transform: scale(1.2); }
+}
 </style>
 </head>
 <body>
@@ -171,6 +211,7 @@ body {
 <button id="prev" type="button" aria-label="上一頁"></button>
 <button id="next" type="button" aria-label="下一頁"></button>
 </div>
+<div id="eye"><img src="素材/眼睛轉場.png" alt=""></div>
 <script>
 if (localStorage.getItem("noteOpen") !== "1") {
   document.getElementById("book").insertAdjacentHTML("afterend", "<p id=\"note-locked\" style=\"font-family:Times New Roman,Times,serif\">帳號或密碼錯誤</p>");
@@ -181,7 +222,7 @@ var pages = [
   { text: "Unicode\n\n0021　!\n0023　#\n0028　(\n0029　)\n002A　*\n002B　+\n002E　.\n003E　&gt;\n0040　@" },
   { text: "\n\n\n<span style=\"font-size:40px\">j&gt;b</span>" },
   { text: "\n\npackage : 0426" },
-  { text: "<div style=\"margin:30px auto 0;width:250px;padding:18px 16px 12px;background:#fff6a8;box-shadow:3px 4px 0 rgba(0,0,0,0.15);transform:rotate(-3deg);line-height:28px;font-family:KaiTi,serif\">對不起<br>我把水打翻了<br>你桌上的文件我有擦乾<br>　　　　　　— B<svg viewBox=\"0 0 60 50\" width=\"60\" height=\"50\" style=\"display:block;margin:6px 0 0 auto\"><polygon points=\"14,22 12,4 26,16\" fill=\"#c46a52\" stroke=\"#1a1a1a\"/><polygon points=\"46,22 48,4 34,16\" fill=\"#c46a52\" stroke=\"#1a1a1a\"/><line x1=\"12\" y1=\"4\" x2=\"10\" y2=\"-2\" stroke=\"#1a1a1a\" stroke-width=\"2\"/><line x1=\"48\" y1=\"4\" x2=\"50\" y2=\"-2\" stroke=\"#1a1a1a\" stroke-width=\"2\"/><ellipse cx=\"30\" cy=\"30\" rx=\"18\" ry=\"15\" fill=\"#c46a52\" stroke=\"#1a1a1a\"/><circle cx=\"23\" cy=\"28\" r=\"2\"/><circle cx=\"37\" cy=\"28\" r=\"2\"/><path d=\"M27 35 Q30 38 33 35\" fill=\"none\" stroke=\"#1a1a1a\"/></svg></div>" },
+  { text: "<div class=\"sticky\"><img src=\"素材/記事本4-04.png\" alt=\"\"></div>" },
   { text: "反向攻擊那次帶回來的。\n\n使用方法那一段，\n我從檔案裡拿掉了。\n\n放在這裡。\n\n<a href=\"38-使用方法.html\" target=\"_blank\">D 的武器</a>" },
   { text: "" }
 ];
@@ -225,7 +266,23 @@ function turn(dir) {
     render();
     leaf.className = "";
     turning = false;
+    if (index === EYE_PAGE && !eyeShown) jumpEye();
   }, 540);
+}
+
+/* 便條紙後一頁，第一次翻到時停一下才跳 */
+var EYE_PAGE = 5;
+var eyeShown = false;
+
+function jumpEye() {
+  var eye = document.getElementById("eye");
+  eyeShown = true;
+  setTimeout(function () {
+    eye.className = "show";
+    setTimeout(function () {
+      eye.className = "";
+    }, 700);
+  }, 450);
 }
 
 document.getElementById("next").onclick = function () { turn(1); };
