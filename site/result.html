@@ -197,7 +197,7 @@ if (!found.length) {
     if (found[i].locked) {
       html += "<p><a href=\"#\" onclick=\"openLock('" + found[i].page + "');return false;\">" + found[i].title + "</a></p>";
     } else {
-      html += "<p><a href=\"" + found[i].page + "\">" + found[i].title + "</a></p>";
+      html += "<p><a href=\"" + found[i].page + "\" target=\"_blank\">" + found[i].title + "</a></p>";
     }
   }
   hits.innerHTML = html;

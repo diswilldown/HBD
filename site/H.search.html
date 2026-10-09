@@ -563,7 +563,7 @@ moveCat();
 
 document.getElementById("search").addEventListener("submit", function (e) {
   e.preventDefault();
-  location.assign("result.html?q=" + encodeURIComponent(document.getElementById("q").value) + "&v=36");
+  window.open("result.html?q=" + encodeURIComponent(document.getElementById("q").value) + "&v=36", "_blank");
 });
 
 /* 留言板。先有留言一、留言二，玩家送出的存在這台瀏覽器 */
@@ -694,7 +694,7 @@ var i;
 for (i = 0; i < pageLinks.length; i++) {
   pageLinks[i].addEventListener("click", function (e) {
     e.preventDefault();
-    location.assign(this.href);
+    window.open(this.href, "_blank");
   });
 }
 
@@ -706,7 +706,7 @@ function openNotebook() {
     return false;
   }
   localStorage.setItem("noteOpen", "1");
-  location.href = "H記事本.html";
+  window.open("H記事本.html", "_blank");
   return false;
 }
 </script>
