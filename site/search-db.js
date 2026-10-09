@@ -77,6 +77,12 @@ var searchDb = [
     title: "H 奪權的便條",
     page: "29-奪權的內部便條.html"
   },
+  // 記事本寫 package : 0426，搜 package 進包裹頁
+  {
+    keys: ["package"],
+    title: "package",
+    page: "02-網頁包裹.html"
+  },
   // 點下去不開頁，在搜尋結果頁跳出小窗
   {
     keys: ["CL(*)CK"],

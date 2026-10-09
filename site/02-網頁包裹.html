@@ -47,6 +47,16 @@ body {
 .wheel button:active {
   color: #ffffff;
 }
+#lock.shake {
+  animation: shake 0.4s ease-in-out;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-10px); }
+  40% { transform: translateX(9px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(4px); }
+}
 .num {
   color: #f3e2b8;
   font-family: "Courier New", Courier, monospace;
@@ -88,6 +98,16 @@ body {
 </div>
 </div>
 <script>
+/* 停手一秒還沒打開，鎖就抖一下 */
+var lock = document.getElementById("lock");
+var shakeTimer = null;
+
+function shakeLock() {
+  lock.className = "";
+  void lock.offsetWidth;
+  lock.className = "shake";
+}
+
 var wheels = document.querySelectorAll(".wheel");
 for (var i = 0; i < wheels.length; i++) {
   (function (wheel) {
@@ -97,7 +117,12 @@ for (var i = 0; i < wheels.length; i++) {
       var nums = document.querySelectorAll(".num");
       var code = "";
       for (var n = 0; n < nums.length; n++) code += nums[n].textContent;
-      if (code === "0426" && localStorage.getItem("noteOpen") === "1") window.open("cl(＊)ck.html", "_blank");
+      clearTimeout(shakeTimer);
+      if (code === "0426" && localStorage.getItem("noteOpen") === "1") {
+        window.open("cl(＊)ck.html", "_blank");
+        return;
+      }
+      shakeTimer = setTimeout(shakeLock, 1000);
     }
     wheel.querySelector(".up").onclick = function () {
       setDigit(Number(num.textContent) + 1);
