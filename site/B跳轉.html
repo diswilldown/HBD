@@ -137,9 +137,22 @@ handFileR.src = "素材/手張.png";
 prepReverse();
 
 /* 從密碼窗叫 startScare。自己打開這一頁時也會走同一段 */
+/* 先全黑至少一秒。音樂和雙手還沒載完就繼續黑著等，最多再等五秒 */
 function startScare(next) {
   if (window.scaring) return;
   window.scaring = true;
+  var began = Date.now();
+  var wait = setInterval(function () {
+    var ready = scareReady && handFileL.complete && handFileR.complete;
+    var waited = Date.now() - began;
+    if ((ready && waited >= 1000) || waited >= 6000) {
+      clearInterval(wait);
+      runScare(next);
+    }
+  }, 40);
+}
+
+function runScare(next) {
   var dest = next || "17-B的人名頁.html";
   var audio = document.getElementById("dream");
   var field = document.getElementById("field");
