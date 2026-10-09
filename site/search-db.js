@@ -77,6 +77,12 @@ var searchDb = [
     title: "H 奪權的便條",
     page: "29-奪權的內部便條.html"
   },
+  // 點下去不開頁，在搜尋結果頁跳出小窗
+  {
+    keys: ["CL(*)CK"],
+    title: "CL(*)CK",
+    notice: "沒反應"
+  },
   // H 這邊的爆炸策畫
   {
     keys: ["爆炸策畫"],

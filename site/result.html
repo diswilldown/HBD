@@ -93,7 +93,8 @@ body.term #who {
 body.term #banner {
   display: none;
 }
-#lock {
+#lock,
+#notice {
   display: none;
   position: fixed;
   left: 0;
@@ -105,7 +106,8 @@ body.term #banner {
   align-items: center;
   justify-content: center;
 }
-#lock-box {
+#lock-box,
+.lock-box {
   width: 320px;
   background: #c0c0c0;
   border: 2px solid #000000;
@@ -156,9 +158,17 @@ body.term #banner {
 </font>
 </div>
 </div>
+<div id="notice" onclick="closeNotice();">
+<div class="lock-box">
+<font face="Times New Roman, Times, serif">
+<p><b id="notice-msg"></b></p>
+<p><input type="button" value="關閉"></p>
+</font>
+</div>
+</div>
 <!-- 密碼打對後，這一頁蓋上來。(*) 停住再變多，歌一斷就進人名頁 -->
 <iframe id="scare-frame" src="B跳轉.html?v=21" title="(*)"></iframe>
-<script src="search-db.js?v=37"></script>
+<script src="search-db.js?v=38"></script>
 <script src="d-search-db.js?v=13"></script>
 <script>
 var q = "";
@@ -194,13 +204,24 @@ if (!found.length) {
 } else {
   var html = "";
   for (i = 0; i < found.length; i++) {
-    if (found[i].locked) {
+    if (found[i].notice) {
+      html += "<p><a href=\"#\" onclick=\"openNotice('" + found[i].notice + "');return false;\">" + found[i].title + "</a></p>";
+    } else if (found[i].locked) {
       html += "<p><a href=\"#\" onclick=\"openLock('" + found[i].page + "');return false;\">" + found[i].title + "</a></p>";
     } else {
       html += "<p><a href=\"" + found[i].page + "\" target=\"_blank\">" + found[i].title + "</a></p>";
     }
   }
   hits.innerHTML = html;
+}
+
+function openNotice(text) {
+  document.getElementById("notice-msg").innerHTML = text;
+  document.getElementById("notice").style.display = "flex";
+}
+
+function closeNotice() {
+  document.getElementById("notice").style.display = "none";
 }
 
 /* 點上鎖的結果時，在這一頁跳出密碼窗，不另開頁。B 的密碼是這句 */
