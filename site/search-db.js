@@ -65,11 +65,11 @@ var searchDb = [
     title: "爆炸案死亡與受傷名冊",
     page: "20-死亡名單-hver.html"
   },
-  // B 的藥歷，用來對批號
+  // 藥歷，用來看 B 和 H 同一天拿了同一種藥
   {
     keys: ["藥歷"],
-    title: "B 的藥歷",
-    page: "26-B的藥歷.html"
+    title: "藥歷",
+    page: "26-藥歷.html"
   },
   // H 奪權便條。D 搜同一個詞會進同一頁
   {
