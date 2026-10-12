@@ -1,0 +1,53 @@
+<!-- hbd。B.search 搜 hbd 進來。生日快樂一個字一個字打出來 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>hbd</title>
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+  background: #000000;
+}
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Microsoft JhengHei", "PingFang TC", "Heiti TC", sans-serif;
+  color: #ffffff;
+}
+#line {
+  font-size: 64px;
+  letter-spacing: 0.3em;
+  min-height: 1.2em;
+}
+#line span {
+  opacity: 0;
+  filter: blur(8px);
+  animation: ink 1.2s ease-out forwards;
+}
+@keyframes ink {
+  to { opacity: 1; filter: blur(0); }
+}
+</style>
+</head>
+<body>
+<p id="line"></p>
+<script>
+/* 每個字隔一段時間出現，慢慢浮出來 */
+var text = "生日快樂";
+var CHAR_TIME = 900;
+var line = document.getElementById("line");
+var i = 0;
+function typeNext() {
+  var span = document.createElement("span");
+  span.textContent = text.charAt(i);
+  line.appendChild(span);
+  i = i + 1;
+  if (i < text.length) setTimeout(typeNext, CHAR_TIME);
+}
+setTimeout(typeNext, 800);
+</script>
+</body>
+</html>

@@ -73,6 +73,11 @@ document.getElementById("search").addEventListener("submit", function (e) {
   e.preventDefault();
   var miss = document.getElementById("miss");
   miss.textContent = "";
+  /* 只有 hbd 搜得到，大小寫要一樣 */
+  if (document.getElementById("q").value.replace(/\s/g, "") === "hbd") {
+    window.open("hbd.html", "_blank");
+    return;
+  }
   setTimeout(function () {
     miss.textContent = "搜尋錯誤";
   }, 120);
