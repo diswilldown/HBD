@@ -73,8 +73,8 @@ document.getElementById("search").addEventListener("submit", function (e) {
   e.preventDefault();
   var miss = document.getElementById("miss");
   miss.textContent = "";
-  /* 只有 hbd 搜得到，大小寫要一樣 */
-  if (document.getElementById("q").value.replace(/\s/g, "") === "hbd") {
+  /* 只有大寫 HBD 搜得到 */
+  if (document.getElementById("q").value.replace(/\s/g, "") === "HBD") {
     window.open("hbd.html", "_blank");
     return;
   }
