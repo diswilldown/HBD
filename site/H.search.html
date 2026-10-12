@@ -568,7 +568,8 @@ document.getElementById("search").addEventListener("submit", function (e) {
 
 /* 留言板。先有留言一、留言二，玩家送出的存在這台瀏覽器 */
 var boardSeed = [
-  { name: "H", text: "Lx hdspkv fvfhur hyd", when: "10/10 00:00" }
+  { name: "H", text: "Lx hdspkv fvfhur hyd", when: "10/10 00:00" },
+  { name: "H", text: "下次不會幫你了 請注意", file: "pdf/J指派資料2.pdf", when: "10/12 18:00" }
 ];
 
 function loadBoardPosts() {
@@ -605,6 +606,14 @@ function drawBoard() {
     meta.className = "meta";
     meta.textContent = "No." + (n + 1) + (who ? "　" + who : "") + "　留言時間 " + list[n].when;
     body.textContent = list[n].text;
+    if (list[n].file) {
+      var fileLink = document.createElement("a");
+      fileLink.href = list[n].file;
+      fileLink.target = "_blank";
+      fileLink.textContent = list[n].file.replace(/^pdf\//, "");
+      body.appendChild(document.createElement("br"));
+      body.appendChild(fileLink);
+    }
     metaRow.appendChild(meta);
     bodyRow.appendChild(body);
     table.appendChild(metaRow);
